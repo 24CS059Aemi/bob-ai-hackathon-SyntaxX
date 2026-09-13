@@ -2,20 +2,20 @@
 
 ## Background
 
-[Describe the broader context. What domain or industry does this problem belong to? What situation creates the problem?]
+Electric utilities operate high-value transmission and distribution networks that depend on transformers, substations, and other grid assets. These assets generate thermal, vibration, partial discharge, oil quality, and other operational signals that can reveal failure risk before a major outage occurs.
 
 ## The Problem
 
-[State the problem clearly and specifically. Avoid vague statements like "things are slow" — instead say "Operations teams spend an average of 45 minutes per incident diagnosing pipeline failures because logs are scattered across 6 different tools."]
+A utility operations team often receives sensor readings and weather forecast signals too late, or in disconnected systems, making it difficult to identify which assets, zones, and crews need intervention first. Transformer and substation failures can cause cascading outages and severe business and public safety impact.
 
 ## Who is Affected
 
-[Describe the specific user or persona experiencing this problem. Be concrete — not "developers" but "backend engineers managing CI/CD pipelines in enterprises with 50+ microservices."]
+Grid operations teams, maintenance planners, field crews, and control center managers are affected because they must choose where to dispatch crews and which equipment should receive preventive maintenance under constrained resources.
 
 ## Why It Matters
 
-[What is the cost of this problem? Lost time? Revenue? Safety risk? Frustration? Quantify if possible.]
+When a failure is detected too late, a utility can lose service to thousands of customers and face costly restoration work. A preventive risk ranking model reduces outage likelihood and improves maintenance planning.
 
 ## Why Existing Solutions Fall Short
 
-[Briefly explain what people currently do and why it doesn't fully solve the problem. This sets up why your solution is needed.]
+Many utilities still rely on calendar-based maintenance and static asset thresholds. Weather events and sensor streams are not always fused into a single operational view that supports outage-prone area prediction and crew pre-positioning.

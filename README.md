@@ -1,43 +1,35 @@
-# 🚀 [Your Project Title Here]
-
-> ⚠️ **Replace everything in `[ ]` brackets with your actual content before submission.**
-
----
+# 🚀 Power Outage Prediction & Grid Equipment Failure Advisor
 
 ## 👥 Team
 
 | Field | Value |
 |---|---|
-| **Team Name** | [Your Team Name] |
-| **Track** | [AI / DevOps / Sustainability / Open] |
-| **Team Lead** | [Name] — [email@ibm.com] |
-| **Members** | [Name 1], [Name 2], [Name 3] |
+| **Team Name** | SyntaxX |
+| **Track** | AI |
+| **Team Lead** | Anshi Ladani — 24cs044@charusat.edu.in |
+| **Members** | Aemi Patel, Suyanshi Patel, Drashti Patel |
 
 ---
 
 ## 🎯 Problem Statement
 
-> In 2–3 sentences: What problem does your project solve? Who experiences this problem?
-
-[Describe the real-world problem your project addresses. Be specific about who the user is and what pain point they face.]
+Electric utilities need a single operational picture of asset health, weather risk, and historical incident patterns. Transformer and substation failures can cause widespread outages, expensive restoration, and public safety risk when maintenance decisions are delayed or based on incomplete signals.
 
 ---
 
 ## 💡 Solution
 
-> In 2–3 sentences: What did you build? How does it solve the problem above?
-
-[Describe your solution clearly. Explain the core mechanism — what makes it work.]
+We built a Bob-powered outage decision support solution that ranks equipment and regions by outage likelihood and operational impact. It fuses sensor health indicators, weather forecasts, and incidents into a prioritized action plan for maintenance and crew pre-positioning.
 
 ---
 
 ## ✨ Key Features
 
-- **Feature 1:** [Brief description — e.g., "Real-time anomaly detection using watsonx.ai"]
-- **Feature 2:** [Brief description]
-- **Feature 3:** [Brief description]
-- **Feature 4:** [Optional]
-- **Feature 5:** [Optional]
+- Predict outage-prone areas using weather and equipment-condition signals.
+- Rank grid assets by health risk and potential outage impact.
+- Generate prioritized maintenance and crew pre-positioning suggestions.
+- Surface attack of incidents and asset health signals through a dashboard workflow.
+- Provide explainable, reusable risk recommendations for operations teams.
 
 ---
 
@@ -45,11 +37,11 @@
 
 | Category | Technologies |
 |---|---|
-| **Languages** | [e.g., Python, TypeScript] |
-| **Frameworks** | [e.g., FastAPI, React] |
-| **IBM Technologies** | [e.g., watsonx.ai, IBM Bob, IBM Cloud] |
-| **Databases** | [e.g., PostgreSQL, Redis] |
-| **Other** | [e.g., Docker, GitHub Actions] |
+| **Languages** | Python, TypeScript |
+| **Frameworks** | FastAPI, React |
+| **IBM Technologies** | IBM Bob, watsonx.ai, IBM Cloud Functions |
+| **Databases** | PostgreSQL, Redis |
+| **Other** | Docker, GitHub Actions, Slack API |
 
 ---
 
@@ -73,22 +65,22 @@
 
 ## ⚡ How to Run
 
-> **Copy these exact steps from your [`docs/setup-guide.md`](docs/setup-guide.md)**
+> Use the instructions in the setup guide for the repository.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/[your-repo].git
-cd [your-repo]
+git clone https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX.git
+cd bob-ai-hackathon-SyntaxX
 
 # 2. Install dependencies
-[your install command here]
+pip install -r requirements.txt
 
 # 3. Configure environment
 cp .env.example .env
 # Edit .env with your values
 
 # 4. Run the project
-[your run command here]
+uvicorn app.main:app --reload
 ```
 
 ---
@@ -100,22 +92,18 @@ cp .env.example .env
 | 📹 Demo Video | [See demo/demo-video-link.txt](demo/demo-video-link.txt) |
 | 🌐 Live Demo | [See demo/live-demo-url.txt](demo/live-demo-url.txt) |
 | 🖼️ Screenshots | [See demo/screenshots/](demo/screenshots/) |
-| 📊 Presentation | [See presentation/slides.pdf](presentation/) |
+| 📊 Presentation | [See presentation/](presentation/) |
 
 ---
 
 ## ⚠️ Known Limitations
 
-> Be honest — judges appreciate transparency over overclaiming.
-
-- [Limitation 1: e.g., "Authentication is mocked — not production-ready"]
-- [Limitation 2: e.g., "Only tested on Chrome"]
-- [Limitation 3: e.g., "Feature X is scaffolded but not fully implemented"]
+This prototype uses representative example data and should be adapted to real utility telemetry, forecast APIs, and secure access controls before production deployment.
 
 ---
 
 ## 🏅 What We're Most Proud Of
 
-[Tell the judges what part of your submission is strongest and worth paying close attention to.]
+We are most proud of combining sensor health, weather data, and historical incident records into one operational response workflow for grid outage prevention.
 
 ---

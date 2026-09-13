@@ -2,48 +2,42 @@
 
 ## System Architecture
 
-[Describe the overall architecture of your system. Replace the Mermaid diagram below with your actual architecture.]
+The Power Outage Prediction & Grid Equipment Failure Advisor receives asset sensor feeds, weather forecast information, and incident history from utility operations data sources. A Python or API backend coordinates feature preparation and risk ranking, while the dashboard shows vulnerable assets, outage-prone zones, health scores, and recommended response actions.
 
 ```mermaid
 graph TD
-    A[User / Browser] -->|HTTP| B[Frontend - React]
-    B -->|REST API| C[Backend - FastAPI]
-    C -->|SDK| D[watsonx.ai]
-    C -->|Query| E[PostgreSQL]
-    C -->|Publish| F[Slack Webhook]
-    D -->|Inference Result| C
+    A[Utility Operator] -->|HTTP| B[Frontend Dashboard]
+    B -->|REST API| C[Backend Risk Engine]
+    C -->|Feature Data| D[Sensor and Weather Data]
+    C -->|Prediction / Ranking| E[IBM Bob / watsonx.ai]
+    C -->|Asset Risk Store| F[PostgreSQL]
+    C -->|Maintenance Recommendations| G[Operations Plan]
 ```
 
 ## Components
 
 | Component | Technology | Responsibility |
 |---|---|---|
-| Frontend | [e.g., React 18] | [e.g., Dashboard UI, user interaction] |
-| Backend API | [e.g., FastAPI] | [e.g., Business logic, orchestration] |
-| AI / ML | [e.g., watsonx.ai] | [e.g., Anomaly scoring, classification] |
-| Database | [e.g., PostgreSQL] | [e.g., Storing pipeline events and scores] |
-| Notifications | [e.g., Slack API] | [e.g., Alerting on threshold breaches] |
+| Frontend | React | Dashboard UI for assets, weather trends, outage risk, and recommendations |
+| Backend API | FastAPI | Data normalization, ranking, recommendation generation, and APIs |
+| AI / ML | watsonx.ai / IBM Bob | Predictive scoring and explainable incident-risk reasoning |
+| Database | PostgreSQL | Stores grid asset health signals, forecasts, risk scores, and recommendations |
+| Data Sources | Weather Feed, Sensor Feed, Incident History | Input signals that feed the outage risk engine |
 
 ## Data Flow
 
-[Describe how data moves through your system from input to output.]
-
-1. [e.g., Pipeline logs are ingested via a webhook from GitHub Actions]
-2. [e.g., Logs are preprocessed and chunked into 512-token segments]
-3. [e.g., Each chunk is sent to the watsonx.ai inference endpoint]
-4. [e.g., Anomaly scores are stored in PostgreSQL]
-5. [e.g., The React dashboard polls the API every 30 seconds to refresh]
+1. Grid assets emit sensor readings such as temperature, vibration, partial discharge, and oil condition.
+2. Weather forecast and historical incident data are joined with current asset health values.
+3. The backend computes health and outage-risk indicators for each asset and region.
+4. Assets are ranked by risk and impact severity for grid operations planning.
+5. Recommended maintenance and crew pre-positioning actions are shown in the dashboard.
 
 ## Security Considerations
 
-[Note any security decisions relevant to the architecture — even if basic.]
-
-- [e.g., API keys stored in environment variables, never committed to git]
-- [e.g., All API routes require a Bearer token]
-- [e.g., Database credentials rotated via IBM Secrets Manager]
+- API keys and provider credentials are intended to be stored as environment variables rather than committed to git.
+- Dashboard and backend access should be limited to authorized utility operations staff.
+- Sensitive grid and infrastructure data should be protected with secure audit and access logging.
 
 ## Scalability Notes
 
-[Optional: how would this scale beyond the hackathon prototype?]
-
-[e.g., "The FastAPI backend is stateless and could be horizontally scaled behind a load balancer. The watsonx.ai calls are the bottleneck and would benefit from request batching."]
+The prototype can be extended to a real-time event stream, where sensor data is updated continuously and operating decisions are recomputed as conditions evolve. A production deployment should add monitoring, alert policies, and retraining workflows for the risk model.
