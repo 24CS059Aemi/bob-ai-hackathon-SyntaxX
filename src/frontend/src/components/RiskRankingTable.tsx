@@ -2,17 +2,17 @@ import { useState } from 'react'
 import type { RiskResult } from '../api/types'
 
 const SEVERITY_COLOR: Record<string, string> = {
-  Critical: 'bg-red-100 text-red-700 border border-red-300',
-  High:     'bg-orange-100 text-orange-700 border border-orange-300',
-  Medium:   'bg-yellow-100 text-yellow-700 border border-yellow-300',
-  Low:      'bg-green-100 text-green-700 border border-green-300',
+  Critical: 'bg-black text-white border border-black',
+  High:     'bg-zinc-800 text-white border border-zinc-800',
+  Medium:   'bg-zinc-700 text-white border border-zinc-700',
+  Low:      'bg-white text-black border border-black',
 }
 
 const SEVERITY_BAR: Record<string, string> = {
-  Critical: 'bg-red-500',
-  High:     'bg-orange-500',
-  Medium:   'bg-yellow-500',
-  Low:      'bg-green-500',
+  Critical: 'bg-black',
+  High:     'bg-zinc-800',
+  Medium:   'bg-zinc-700',
+  Low:      'bg-white border border-black',
 }
 
 interface Props {
@@ -33,18 +33,18 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
       return (b[sortKey] as number) - (a[sortKey] as number)
     })
 
-  const thClass = 'px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:text-gray-800'
+  const thClass = 'px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:text-black'
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4">
+    <div className="bg-white rounded-2xl shadow p-4 border border-black/10">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-bold text-gray-800">🏭 Asset Risk Ranking</h2>
+        <h2 className="text-lg font-bold text-black">🏭 Asset Risk Ranking</h2>
         <div className="flex gap-2 text-xs">
           {['All', 'Critical', 'High', 'Medium', 'Low'].map(s => (
             <button
               key={s}
               onClick={() => setFilterSeverity(s)}
-              className={`px-2 py-1 rounded-full border ${filterSeverity === s ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+              className={`px-2 py-1 rounded-full border ${filterSeverity === s ? 'bg-black text-white border-black' : 'border-black text-black hover:bg-black hover:text-white'}`}
             >
               {s}
             </button>
@@ -72,11 +72,11 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
           </thead>
           <tbody>
             {sorted.map(a => (
-              <tr key={a.asset_id} className="border-b hover:bg-gray-50 transition-colors">
-                <td className="px-3 py-2 font-bold text-gray-500">{a.rank}</td>
-                <td className="px-3 py-2 font-semibold text-blue-700">{a.asset_id}</td>
-                <td className="px-3 py-2 capitalize text-gray-600">{a.asset_type}</td>
-                <td className="px-3 py-2 text-gray-600">{a.zone}</td>
+              <tr key={a.asset_id} className="border-b hover:bg-black hover:text-white transition-colors">
+                <td className="px-3 py-2 font-bold text-gray-600">{a.rank}</td>
+                <td className="px-3 py-2 font-semibold text-black">{a.asset_id}</td>
+                <td className="px-3 py-2 capitalize text-gray-700">{a.asset_type}</td>
+                <td className="px-3 py-2 text-gray-700">{a.zone}</td>
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-2 bg-gray-200 rounded-full">
@@ -93,21 +93,21 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
                     {a.severity_label}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-gray-600">{a.customers_served.toLocaleString()}</td>
-                <td className="px-3 py-2 text-gray-600">{a.age_years}y</td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_temperature_c > 85 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                <td className="px-3 py-2 text-gray-700">{a.customers_served.toLocaleString()}</td>
+                <td className="px-3 py-2 text-gray-700">{a.age_years}y</td>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_temperature_c > 85 ? 'text-black font-bold' : 'text-gray-700'}`}>
                   {a.latest_temperature_c}
                 </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_partial_discharge_pc > 150 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_partial_discharge_pc > 150 ? 'text-black font-bold' : 'text-gray-700'}`}>
                   {a.latest_partial_discharge_pc}
                 </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_oil_quality_index < 60 ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_oil_quality_index < 60 ? 'text-black font-bold' : 'text-gray-700'}`}>
                   {a.latest_oil_quality_index}
                 </td>
                 <td className="px-3 py-2">
                   <button
                     onClick={() => onSelectAsset(a.asset_id)}
-                    className="text-xs text-blue-600 hover:underline"
+                    className="text-xs text-black hover:underline font-bold"
                   >
                     View →
                   </button>
