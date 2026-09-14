@@ -1,5 +1,7 @@
 # 🚀 Power Outage Prediction & Grid Equipment Failure Advisor
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX)
+
 ## 👥 Team
 
 | Field | Value |
@@ -37,11 +39,11 @@ We built a Bob-powered outage decision support solution that ranks equipment and
 
 | Category | Technologies |
 |---|---|
-| **Languages** | Python, TypeScript |
-| **Frameworks** | FastAPI, React |
-| **IBM Technologies** | IBM Bob, watsonx.ai, IBM Cloud Functions |
-| **Databases** | PostgreSQL, Redis |
-| **Other** | Docker, GitHub Actions, Slack API |
+| **Languages** | Python 3.11, TypeScript |
+| **Frameworks** | FastAPI, React 18, Tailwind CSS, Recharts |
+| **IBM Technologies** | IBM Bob (skill + in-IDE advisor), watsonx.ai (optional) |
+| **Databases** | SQLite (default, zero-infra) |
+| **Other** | Docker, Vite, GitHub Actions |
 
 ---
 
@@ -65,23 +67,28 @@ We built a Bob-powered outage decision support solution that ranks equipment and
 
 ## ⚡ How to Run
 
-> Use the instructions in the setup guide for the repository.
-
+### Option A — One command (Docker)
 ```bash
-# 1. Clone the repo
-git clone https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX.git
-cd bob-ai-hackathon-SyntaxX
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Configure environment
-cp .env.example .env
-# Edit .env with your values
-
-# 4. Run the project
-uvicorn app.main:app --reload
+docker-compose up --build
+# Open http://localhost:8000
 ```
+
+### Option B — Local dev (two terminals)
+```bash
+# Terminal 1 — backend API
+cd src/backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# Terminal 2 — frontend dev server
+cd src/frontend
+npm install
+npm run dev
+# Open http://localhost:5173
+```
+
+### Option C — Deploy to Render (free, permanent URL)
+Click the **Deploy to Render** button above, or see [`render.yaml`](render.yaml) for details.
 
 ---
 

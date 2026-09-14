@@ -1,33 +1,35 @@
-# Render.com deployment configuration
-# Free tier: 512 MB RAM, auto-sleep after 15 min of inactivity
-# Push to GitHub → Render auto-deploys
+# Render.com deployment — native Python + Node build
+# Free tier, auto-deploys on every push to main.
 #
-# Steps to deploy on Render:
-#   1. Go to https://render.com and sign in with GitHub
-#   2. Click "New Web Service" → connect this repo
-#   3. Render detects this file automatically and uses these settings
-#   4. Click "Create Web Service" — done, your URL will be:
-#      https://grid-advisor-<random>.onrender.com
+# ONE-TIME SETUP:
+#   1. Go to https://render.com → sign in with GitHub
+#   2. New → Web Service → connect 24CS059Aemi/bob-ai-hackathon-SyntaxX
+#   3. Render reads this file automatically — just click "Create Web Service"
+#   4. Your live URL: https://grid-advisor.onrender.com  (or similar)
+#   5. Paste that URL into demo/live-demo-url.txt
 
 services:
   - type: web
     name: grid-advisor
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: python
+    region: oregon
     plan: free
+    buildCommand: |
+      pip install -r src/backend/requirements.txt &&
+      cd src/frontend && npm ci --silent && VITE_API_URL="" npm run build && cd ../..
+    startCommand: cd src/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        value: sqlite:////data/grid_advisor.db
+        value: sqlite:///./grid_advisor.db
       - key: LIVE_INTERVAL_SECONDS
         value: "360"
       - key: PYTHONUNBUFFERED
         value: "1"
-      # Add these in the Render dashboard if you have watsonx.ai credentials:
+      - key: RANDOM_SEED
+        value: "42"
+      # Optional — add in Render dashboard for watsonx.ai features:
       # - key: WATSONX_API_KEY
       #   sync: false
       # - key: WATSONX_PROJECT_ID
       #   sync: false
-    disk:
-      name: grid-data
-      mountPath: /data
-      sizeGB: 1
+    healthCheckPath: /health

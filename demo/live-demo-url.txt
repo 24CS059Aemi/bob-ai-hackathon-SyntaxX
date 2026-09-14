@@ -1,1 +1,13 @@
-NOT DEPLOYED — run locally using docs/setup-guide.md
+Deploy to Render (free): https://render.com/deploy?repo=https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX
+
+After deploying, your live URL will be something like:
+https://grid-advisor.onrender.com
+
+Steps:
+1. Click the Deploy to Render button in README.md
+2. Sign in with GitHub
+3. Click "Create Web Service"
+4. Wait ~3 minutes for the build to complete
+5. Replace this file with your actual URL once live
+
+Local demo: http://localhost:8000  (run: docker-compose up --build)
