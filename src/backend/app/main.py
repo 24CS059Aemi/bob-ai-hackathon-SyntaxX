@@ -71,6 +71,18 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/debug-static", tags=["Health"], include_in_schema=False)
+def debug_static():
+    import os
+    files = []
+    if _STATIC_DIR.is_dir():
+        for root, dirs, fs in os.walk(str(_STATIC_DIR)):
+            for f in fs:
+                full = os.path.join(root, f)
+                files.append(full.replace(str(_STATIC_DIR), ""))
+    return {"static_dir": str(_STATIC_DIR), "exists": _STATIC_DIR.is_dir(), "files": files}
+
+
 # ── Static frontend (production build) ──────────────────────────────────────
 # Vite builds to app/static/:
 #   static/index.html
