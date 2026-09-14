@@ -1,7 +1,5 @@
 # 🚀 Power Outage Prediction & Grid Equipment Failure Advisor
 
-> 🌐 **Live Demo:** [https://grid-advisor-yipp.onrender.com](https://grid-advisor-yipp.onrender.com)
-
 ## 👥 Team
 
 | Field | Value |
