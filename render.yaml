@@ -1,5 +1,6 @@
 # Render.com deployment — native Python + Node build
 # Free tier, auto-deploys on every push to main.
+# deploy-trigger: 2
 
 services:
   - type: web
