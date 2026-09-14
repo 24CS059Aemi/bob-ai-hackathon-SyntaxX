@@ -36,11 +36,13 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    """Create tables and seed database with synthetic data on first run."""
+    """Create tables, seed database, then start live data simulator."""
     from .database import engine
     from .data.seed import seed
+    from .data.live_simulator import start_live_simulator
     models.Base.metadata.create_all(bind=engine)
     seed()
+    start_live_simulator()
 
 
 # Register routers
