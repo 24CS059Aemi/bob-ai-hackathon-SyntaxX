@@ -78,12 +78,26 @@ def health():
 #   static/assets/index-xxx.js
 #   static/assets/index-xxx.css
 #
-# StaticFiles with html=True serves index.html for unknown paths (SPA routing).
-# Mounted LAST so API routes take priority.
+# Mount /assets explicitly so JS/CSS bundles are served with correct MIME type.
+# Mount / with html=True last so SPA routing (React Router) works for all paths.
 _STATIC_DIR = Path(__file__).parent / "static"
+_ASSETS_DIR = _STATIC_DIR / "assets"
 
 if _STATIC_DIR.is_dir():
-    app.mount("/", StaticFiles(directory=str(_STATIC_DIR), html=True), name="spa")
+    # 1. Serve /assets/* (JS/CSS bundles) — must come before the root mount
+    if _ASSETS_DIR.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="assets")
+
+    # 2. Serve everything else (index.html + SPA fallback)
+    from fastapi.responses import FileResponse
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def spa_fallback(full_path: str):
+        """Serve index.html for all unmatched paths (React SPA routing)."""
+        file = _STATIC_DIR / full_path
+        if file.is_file():
+            return FileResponse(str(file))
+        return FileResponse(str(_STATIC_DIR / "index.html"))
 else:
     @app.get("/", tags=["Health"])
     def root():
