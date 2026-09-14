@@ -1,12 +1,5 @@
 # Render.com deployment — native Python + Node build
 # Free tier, auto-deploys on every push to main.
-#
-# ONE-TIME SETUP:
-#   1. Go to https://render.com → sign in with GitHub
-#   2. New → Web Service → connect 24CS059Aemi/bob-ai-hackathon-SyntaxX
-#   3. Render reads this file automatically — just click "Create Web Service"
-#   4. Your live URL: https://grid-advisor.onrender.com  (or similar)
-#   5. Paste that URL into demo/live-demo-url.txt
 
 services:
   - type: web
@@ -14,10 +7,8 @@ services:
     runtime: python
     region: oregon
     plan: free
-    buildCommand: |
-      pip install -r src/backend/requirements.txt &&
-      cd src/frontend && npm ci --silent && VITE_API_URL="" npm run build && cd ../..
-    startCommand: cd src/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: bash build.sh
+    startCommand: bash start.sh
     envVars:
       - key: DATABASE_URL
         value: sqlite:///./grid_advisor.db
@@ -27,9 +18,4 @@ services:
         value: "1"
       - key: RANDOM_SEED
         value: "42"
-      # Optional — add in Render dashboard for watsonx.ai features:
-      # - key: WATSONX_API_KEY
-      #   sync: false
-      # - key: WATSONX_PROJECT_ID
-      #   sync: false
     healthCheckPath: /health
