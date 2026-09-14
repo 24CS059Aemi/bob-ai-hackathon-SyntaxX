@@ -9,14 +9,19 @@ Startup sequence:
 """
 
 import os
+import mimetypes
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from . import models
 from .routes import assets, risk, maintenance, crew, bob
+
+# Resolve static dir early — used by both debug endpoint and spa_fallback
+_STATIC_DIR = Path(__file__).parent / "static"
 
 
 @asynccontextmanager
@@ -71,9 +76,9 @@ def health():
     return {"status": "ok"}
 
 
-@app.get("/debug-static", tags=["Health"], include_in_schema=False)
+@app.get("/debug-static", include_in_schema=False)
 def debug_static():
-    import os
+    """Show what files are in the static dir on the server — used for debugging."""
     files = []
     if _STATIC_DIR.is_dir():
         for root, dirs, fs in os.walk(str(_STATIC_DIR)):
@@ -86,30 +91,16 @@ def debug_static():
 # ── Static frontend (production build) ──────────────────────────────────────
 # Vite builds to app/static/:
 #   static/index.html
-#   static/assets/index-xxx.js
-#   static/assets/index-xxx.css
+#   static/_app/index-xxx.js   (assetsDir="_app" avoids clash with /assets API)
+#   static/_app/index-xxx.css
 #
-# A single catch-all GET route handles everything:
-#   - /assets/index-xxx.js  → FileResponse with correct MIME type
-#   - /assets/index-xxx.css → FileResponse with correct MIME type
-#   - /                     → index.html
-#   - /dashboard, /any-spa  → index.html (React Router SPA fallback)
-#
-# NO StaticFiles mount — avoids the known FastAPI issue where StaticFiles
-# at "/" returns 404 for sub-paths when another mount intercepts first.
-_STATIC_DIR = Path(__file__).parent / "static"
+# A catch-all GET route serves files by exact path or falls back to index.html.
+# No StaticFiles mount — avoids FastAPI sub-path 404 issues.
 
 if _STATIC_DIR.is_dir():
-    from fastapi.responses import FileResponse
-    import mimetypes
-
     @app.get("/{full_path:path}", include_in_schema=False)
     def spa_fallback(full_path: str):
-        """
-        Serve static files by exact path, or fall back to index.html.
-        Handles JS/CSS bundles under /assets/ and all React Router paths.
-        """
-        # Strip leading slash if any
+        """Serve static files by exact path, fallback to index.html for SPA routing."""
         clean = full_path.lstrip("/")
         candidate = _STATIC_DIR / clean if clean else _STATIC_DIR / "index.html"
 
@@ -117,7 +108,6 @@ if _STATIC_DIR.is_dir():
             mime, _ = mimetypes.guess_type(str(candidate))
             return FileResponse(str(candidate), media_type=mime or "application/octet-stream")
 
-        # SPA fallback — let React Router handle the path
         return FileResponse(str(_STATIC_DIR / "index.html"), media_type="text/html")
 else:
     @app.get("/", tags=["Health"])
