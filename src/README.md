@@ -1,47 +1,80 @@
 # Source Code
 
-Place all your project's source code in this folder.
+## Layout
 
-## Structure Guidelines
-
-Organize your code logically. Here are common patterns — use whatever fits
-your project:
-
-### Web Application
 ```
 src/
-  backend/        ← API server code
-  frontend/       ← UI code
-  shared/         ← Shared utilities/types
+├── backend/                        ← FastAPI Python backend
+│   ├── requirements.txt            ← Python dependencies
+│   ├── app/
+│   │   ├── main.py                 ← FastAPI app entry point
+│   │   ├── database.py             ← SQLAlchemy engine (SQLite default)
+│   │   ├── models.py               ← ORM models
+│   │   ├── schemas.py              ← Pydantic response schemas
+│   │   ├── data/
+│   │   │   ├── generator.py        ← Synthetic data (IEEE/IEC grounded)
+│   │   │   └── seed.py             ← DB seed script
+│   │   ├── engine/
+│   │   │   ├── risk_scorer.py      ← Composite risk formula
+│   │   │   ├── asset_ranker.py     ← Priority ranking
+│   │   │   ├── maintenance.py      ← Maintenance action rules
+│   │   │   └── crew.py             ← Crew pre-positioning algorithm
+│   │   ├── bob/
+│   │   │   ├── advisor.py          ← watsonx.ai / rule-based fallback
+│   │   │   └── prompts.py          ← LLM prompt templates
+│   │   └── routes/
+│   │       ├── assets.py           ← /assets
+│   │       ├── risk.py             ← /risk/ranking, /risk/zones, /risk/summary
+│   │       ├── maintenance.py      ← /maintenance/plan
+│   │       ├── crew.py             ← /crew/positioning
+│   │       └── bob.py              ← /bob/briefing, /bob/explain/{id}
+│   └── tests/
+│       ├── test_generator.py
+│       ├── test_risk_scorer.py
+│       └── test_api.py
+│
+├── frontend/                       ← React 18 + TypeScript + Vite + Tailwind
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── src/
+│       ├── api/
+│       │   ├── client.ts           ← Axios API calls
+│       │   └── types.ts            ← TypeScript interfaces
+│       ├── components/
+│       │   ├── DashboardHeader.tsx ← Summary counts bar
+│       │   ├── RiskRankingTable.tsx← Sortable asset table
+│       │   ├── ZoneMap.tsx         ← SVG zone heatmap
+│       │   ├── SensorSparklines.tsx← 7-day sensor trend charts
+│       │   ├── MaintenancePlan.tsx ← Ordered action cards
+│       │   ├── CrewPanel.tsx       ← Crew assignment table
+│       │   └── BobAdvisorPanel.tsx ← AI briefing panel
+│       └── pages/
+│           └── Dashboard.tsx       ← Main tabbed dashboard
+│
+└── .env.example                    ← Environment variable template
 ```
 
-### Data / AI Project
-```
-src/
-  data/           ← Data ingestion / preprocessing
-  models/         ← ML model code
-  api/            ← Serving layer
-  notebooks/      ← Jupyter notebooks (exploration)
-```
+## Quick Start
 
-### CLI / Script-based Tool
-```
-src/
-  cli/            ← CLI entry points
-  lib/            ← Core logic
-  utils/          ← Helpers
+```bash
+# Backend (auto-seeds on first run)
+cd src/backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+# Frontend (in a new terminal)
+cd src/frontend
+npm install
+npm run dev
 ```
 
-## Important Files to Include
+Open **http://localhost:5173**
 
-- `requirements.txt` or `package.json` — dependency manifest
-- `.env.example` — template for environment variables (NEVER commit `.env`)
-- Any database migration files
-- Configuration files
+## Running Tests
 
-## What NOT to Include in src/
+```bash
+cd src/backend
+pytest tests/ -v
+```
 
-- `.env` files with real secrets
-- Large binary files (use Git LFS or link externally)
-- `node_modules/` or `venv/` (these are in `.gitignore`)
-- Build artifacts (`dist/`, `build/`, `__pycache__/`)
+All 43 tests pass. No external services required — watsonx.ai is mocked in tests.
