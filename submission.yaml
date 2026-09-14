@@ -45,11 +45,11 @@ submission:
     - "Use historical incidents to ground the outage risk model"
 
   tech_stack:
-    languages: ["Python", "TypeScript"]                      # REQUIRED — e.g., ["Python", "TypeScript"]
-    frameworks: ["FastAPI", "React"]                     # e.g., ["FastAPI", "React"]
-    ibm_technologies: ["IBM Bob", "watsonx.ai", "IBM Cloud Functions"]               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
-    databases: ["PostgreSQL", "Redis"]                      # e.g., ["PostgreSQL", "Redis"]
-    other: ["Docker", "GitHub Actions", "Slack API"]                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
+    languages: ["Python", "TypeScript"]
+    frameworks: ["FastAPI", "React", "Tailwind CSS", "Recharts"]
+    ibm_technologies: ["IBM Bob", "watsonx.ai"]
+    databases: ["SQLite"]
+    other: ["Docker", "Vite", "GitHub Actions", "Render"]
 
   what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
     The strongest part of our submission is the end-to-end grid intelligence workflow that
