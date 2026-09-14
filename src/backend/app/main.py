@@ -14,7 +14,6 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .routes import assets, risk, maintenance, crew, bob
@@ -78,26 +77,36 @@ def health():
 #   static/assets/index-xxx.js
 #   static/assets/index-xxx.css
 #
-# Mount /assets explicitly so JS/CSS bundles are served with correct MIME type.
-# Mount / with html=True last so SPA routing (React Router) works for all paths.
+# A single catch-all GET route handles everything:
+#   - /assets/index-xxx.js  → FileResponse with correct MIME type
+#   - /assets/index-xxx.css → FileResponse with correct MIME type
+#   - /                     → index.html
+#   - /dashboard, /any-spa  → index.html (React Router SPA fallback)
+#
+# NO StaticFiles mount — avoids the known FastAPI issue where StaticFiles
+# at "/" returns 404 for sub-paths when another mount intercepts first.
 _STATIC_DIR = Path(__file__).parent / "static"
-_ASSETS_DIR = _STATIC_DIR / "assets"
 
 if _STATIC_DIR.is_dir():
-    # 1. Serve /assets/* (JS/CSS bundles) — must come before the root mount
-    if _ASSETS_DIR.is_dir():
-        app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="assets")
-
-    # 2. Serve everything else (index.html + SPA fallback)
     from fastapi.responses import FileResponse
+    import mimetypes
 
     @app.get("/{full_path:path}", include_in_schema=False)
     def spa_fallback(full_path: str):
-        """Serve index.html for all unmatched paths (React SPA routing)."""
-        file = _STATIC_DIR / full_path
-        if file.is_file():
-            return FileResponse(str(file))
-        return FileResponse(str(_STATIC_DIR / "index.html"))
+        """
+        Serve static files by exact path, or fall back to index.html.
+        Handles JS/CSS bundles under /assets/ and all React Router paths.
+        """
+        # Strip leading slash if any
+        clean = full_path.lstrip("/")
+        candidate = _STATIC_DIR / clean if clean else _STATIC_DIR / "index.html"
+
+        if candidate.is_file():
+            mime, _ = mimetypes.guess_type(str(candidate))
+            return FileResponse(str(candidate), media_type=mime or "application/octet-stream")
+
+        # SPA fallback — let React Router handle the path
+        return FileResponse(str(_STATIC_DIR / "index.html"), media_type="text/html")
 else:
     @app.get("/", tags=["Health"])
     def root():
