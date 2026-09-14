@@ -70,20 +70,25 @@ def health():
 
 
 # ── Static frontend (production build) ──────────────────────────────────────
-# Mounted AFTER API routes so /assets, /risk, etc. are never shadowed.
+# Vite builds to app/static/ with this layout:
+#   static/index.html
+#   static/assets/index-xxx.js
+#   static/assets/index-xxx.css
+#
+# We mount static/assets/ at /assets so the browser can fetch the JS/CSS,
+# then serve index.html for every other path (SPA catch-all).
 _STATIC_DIR = Path(__file__).parent / "static"
+_ASSETS_DIR = _STATIC_DIR / "assets"
 
 if _STATIC_DIR.is_dir():
-    # Serve JS/CSS/assets from /static sub-path
-    app.mount("/static", StaticFiles(directory=_STATIC_DIR / "assets" if (_STATIC_DIR / "assets").is_dir() else _STATIC_DIR), name="vite-assets")
+    if _ASSETS_DIR.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="vite-assets")
 
     @app.get("/{full_path:path}", include_in_schema=False)
     def serve_spa(full_path: str):
-        """Catch-all: serve index.html for client-side routing."""
-        index = _STATIC_DIR / "index.html"
-        return FileResponse(str(index))
+        """Catch-all: serve index.html for all non-API, non-asset paths."""
+        return FileResponse(str(_STATIC_DIR / "index.html"))
 else:
-    # Development fallback — JSON root response
     @app.get("/", tags=["Health"])
     def root():
         return {
