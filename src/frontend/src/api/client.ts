@@ -5,12 +5,11 @@ import type {
   BobBriefingResponse, SensorReading,
 } from './types'
 
-// In development, keep the localhost backend default.
-// In production on Render/Docker, set VITE_API_URL to an empty string so the
-// frontend calls the same origin without forcing localhost:8000.
-const BASE = import.meta.env.VITE_API_URL === undefined
-  ? 'http://localhost:8000'
-  : import.meta.env.VITE_API_URL
+// Dev: keep the localhost API server.
+// Prod: same-origin API calls should be relative and not force localhost.
+const BASE = import.meta.env.DEV
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:8000')
+  : (import.meta.env.VITE_API_URL || '')
 
 const api = axios.create({ baseURL: BASE, timeout: 15000 })
 
