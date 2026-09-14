@@ -12,7 +12,8 @@ echo "==> Installing frontend dependencies..."
 cd src/frontend
 npm install
 
-echo "==> Building frontend static assets..."
+echo "==> Building frontend static assets for Render production..."
+export VITE_API_URL=""
 npm run build
 
 cd ../..
