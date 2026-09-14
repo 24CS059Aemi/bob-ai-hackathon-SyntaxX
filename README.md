@@ -1,6 +1,6 @@
 # 🚀 Power Outage Prediction & Grid Equipment Failure Advisor
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX)
+> 🌐 **Live Demo:** [https://grid-advisor-yipp.onrender.com](https://grid-advisor-yipp.onrender.com)
 
 ## 👥 Team
 
