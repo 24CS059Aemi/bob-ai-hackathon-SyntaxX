@@ -14,7 +14,6 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 
 from . import models
 from .routes import assets, risk, maintenance, crew, bob
@@ -70,24 +69,17 @@ def health():
 
 
 # ── Static frontend (production build) ──────────────────────────────────────
-# Vite builds to app/static/ with this layout:
+# Vite builds to app/static/:
 #   static/index.html
 #   static/assets/index-xxx.js
 #   static/assets/index-xxx.css
 #
-# We mount static/assets/ at /assets so the browser can fetch the JS/CSS,
-# then serve index.html for every other path (SPA catch-all).
+# StaticFiles with html=True serves index.html for unknown paths (SPA routing).
+# Mounted LAST so API routes take priority.
 _STATIC_DIR = Path(__file__).parent / "static"
-_ASSETS_DIR = _STATIC_DIR / "assets"
 
 if _STATIC_DIR.is_dir():
-    if _ASSETS_DIR.is_dir():
-        app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="vite-assets")
-
-    @app.get("/{full_path:path}", include_in_schema=False)
-    def serve_spa(full_path: str):
-        """Catch-all: serve index.html for all non-API, non-asset paths."""
-        return FileResponse(str(_STATIC_DIR / "index.html"))
+    app.mount("/", StaticFiles(directory=str(_STATIC_DIR), html=True), name="spa")
 else:
     @app.get("/", tags=["Health"])
     def root():
