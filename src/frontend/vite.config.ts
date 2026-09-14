@@ -21,5 +21,7 @@ export default defineConfig(({ mode }) => ({
     // Output directly into the backend static folder so Docker COPY picks it up
     outDir: path.resolve(__dirname, '../backend/app/static'),
     emptyOutDir: true,
+    // Rename assets/ → _app/ to avoid clashing with the FastAPI /assets API route
+    assetsDir: '_app',
   },
 }))
