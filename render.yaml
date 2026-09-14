@@ -19,6 +19,8 @@ services:
         value: "1"
       - key: RANDOM_SEED
         value: "42"
+      - key: VITE_API_URL
+        value: ""
       # ── IBM watsonx.ai (optional — app works without these) ───────────────
       # Set these in the Render dashboard → Environment → Secret Files
       # or paste values directly. The app runs in rule-based mode without them.
