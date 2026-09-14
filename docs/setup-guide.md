@@ -6,74 +6,140 @@
 
 Before you begin, ensure you have the following installed:
 
-- [ ] Python 3.11+
-- [ ] Node.js 18+
-- [ ] Docker Desktop
-- [ ] IBM Cloud credentials with access to IBM Bob and watsonx.ai services
+- [ ] Python 3.11+  (`python --version`)
+- [ ] Node.js 18+   (`node --version`)
+- [ ] npm 9+        (`npm --version`)
+- No Docker required — uses SQLite by default
+
+## Quick Start (2 commands)
+
+```bash
+# 1. Start backend (auto-seeds data on first run)
+cd src/backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+# 2. Start frontend (in a new terminal)
+cd src/frontend
+npm install
+npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
+
+---
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the values:
-
-```bash
-cp .env.example .env
-```
+Copy `.env.example` to `.env` in `src/` and fill in values.
 
 | Variable | Description | Required |
 |---|---|---|
-| `WATSONX_API_KEY` | IBM watsonx.ai API key | Yes |
-| `WATSONX_PROJECT_ID` | IBM watsonx.ai project ID | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `SLACK_WEBHOOK_URL` | Optional webhook for alerts | No |
+| `WATSONX_API_KEY` | IBM watsonx.ai API key | No — app works without it |
+| `WATSONX_PROJECT_ID` | IBM watsonx.ai project ID | No |
+| `WATSONX_URL` | watsonx.ai endpoint URL | No |
+| `DATABASE_URL` | PostgreSQL connection string | No — defaults to SQLite |
+| `VITE_API_URL` | Backend URL seen by React | No — defaults to `http://localhost:8000` |
 
-## Installation
+> ⚠️ Without `WATSONX_API_KEY`, the Bob AI Advisor panel uses rule-based text. All other features work fully.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/24CS059Aemi/bob-ai-hackathon-SyntaxX.git
-cd bob-ai-hackathon-SyntaxX
+cd src
+cp .env.example .env
+# Edit .env if you have watsonx.ai credentials
+```
 
-# 2. Install backend dependencies
+---
+
+## Detailed Installation
+
+### Backend
+
+```bash
+cd src/backend
+
+# Install dependencies
 pip install -r requirements.txt
 
-# 3. Install frontend dependencies
-cd frontend && npm install
-
-# 4. Set up the database
-python manage.py migrate
+# Start server (tables + seed data created automatically on first startup)
+uvicorn app.main:app --reload --port 8000
 ```
 
-## Running the Application
+The API will be available at `http://localhost:8000`.
+Interactive API docs: `http://localhost:8000/docs`
+
+### Frontend
 
 ```bash
-# Start the backend
-uvicorn app.main:app --reload
+cd src/frontend
 
-# Start the frontend (in a separate terminal)
-cd frontend && npm run dev
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-The application will be available at: `http://localhost:8000`
+Dashboard available at `http://localhost:5173`.
+
+---
+
+## Seeding Data Manually
+
+To seed the database and see a terminal summary before starting the server:
+
+```bash
+cd src/backend
+python -m app.data.seed
+```
+
+Or use the standalone demo script:
+
+```bash
+cd src/backend
+python ../../demo/seed_demo_data.py
+```
+
+---
 
 ## Running Tests
 
 ```bash
+cd src/backend
+pip install -r requirements.txt
 pytest tests/ -v
 ```
 
-## Quick Demo
+All tests use an in-memory SQLite database — no running server required.
 
-Use the sample data file in the repository to demonstrate the risk ranking workflow.
+---
 
-```bash
-python demo/seed_demo_data.py
-open http://localhost:8000/demo
-```
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | Health check |
+| GET | `/assets` | List all 15 grid assets |
+| GET | `/assets/{id}` | Single asset details |
+| GET | `/assets/{id}/sensors` | Sensor readings (7-day default) |
+| GET | `/risk/ranking` | Ranked asset list with risk scores |
+| GET | `/risk/zones` | Zone-level risk aggregation |
+| GET | `/risk/summary` | Dashboard summary counts |
+| GET | `/maintenance/plan` | Prioritised maintenance actions |
+| GET | `/crew/positioning` | Crew assignment and staging |
+| POST | `/bob/briefing` | AI-generated operational briefing |
+| GET | `/bob/explain/{id}` | AI explanation for one asset |
+
+---
 
 ## Troubleshooting
 
 | Issue | Solution |
 |---|---|
-| `ModuleNotFoundError` | Run `pip install -r requirements.txt` again |
-| Database connection refused | Ensure PostgreSQL is running with `docker compose up db` |
-| watsonx.ai 401 error | Check the `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` values in `.env` |
+| `ModuleNotFoundError` | Run `pip install -r requirements.txt` in `src/backend/` |
+| Port 8000 already in use | `uvicorn app.main:app --reload --port 8001` then set `VITE_API_URL=http://localhost:8001` |
+| Frontend shows "Backend Not Running" | Confirm backend is running: `curl http://localhost:8000/health` |
+| `npm install` fails | Ensure Node.js 18+: `node --version` |
+| Tests fail with import errors | Run pytest from `src/backend/`: `cd src/backend && pytest tests/ -v` |
+| watsonx.ai 401 error | Check `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` in `.env`; app works without them |
+| Database already seeded message | Normal — seed script skips if data exists; delete `grid_advisor.db` to re-seed |
