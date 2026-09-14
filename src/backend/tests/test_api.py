@@ -65,9 +65,14 @@ def client():
 # ── Health ────────────────────────────────────────────────────────────────────
 
 def test_root(client):
+    # In production the SPA catch-all serves index.html; in dev it returns JSON.
+    # Either way the status must be 200.
     r = client.get("/")
     assert r.status_code == 200
-    assert r.json()["status"] == "running"
+    # If JSON is returned (dev / no static build), check the status field.
+    ct = r.headers.get("content-type", "")
+    if "application/json" in ct:
+        assert r.json()["status"] == "running"
 
 
 def test_health(client):

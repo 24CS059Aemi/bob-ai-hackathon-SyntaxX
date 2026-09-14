@@ -1,0 +1,33 @@
+# Render.com deployment configuration
+# Free tier: 512 MB RAM, auto-sleep after 15 min of inactivity
+# Push to GitHub → Render auto-deploys
+#
+# Steps to deploy on Render:
+#   1. Go to https://render.com and sign in with GitHub
+#   2. Click "New Web Service" → connect this repo
+#   3. Render detects this file automatically and uses these settings
+#   4. Click "Create Web Service" — done, your URL will be:
+#      https://grid-advisor-<random>.onrender.com
+
+services:
+  - type: web
+    name: grid-advisor
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/grid_advisor.db
+      - key: LIVE_INTERVAL_SECONDS
+        value: "360"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      # Add these in the Render dashboard if you have watsonx.ai credentials:
+      # - key: WATSONX_API_KEY
+      #   sync: false
+      # - key: WATSONX_PROJECT_ID
+      #   sync: false
+    disk:
+      name: grid-data
+      mountPath: /data
+      sizeGB: 1
