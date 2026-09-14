@@ -1,11 +1,13 @@
 """Routes: GET /risk/ranking, GET /risk/zones, GET /risk/summary"""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from typing import List
 from datetime import datetime
 
+from ..engine.asset_ranker import get_ranked_assets, get_zone_summary, severity_counts
+from ..engine.risk_scorer import RiskResult
 from ..database import get_db
-from ..engine.asset_ranker import rank_assets, get_zone_summary, severity_counts
+from sqlalchemy.orm import Session
 from ..schemas import (
     RiskRankingResponse, RiskResultSchema, ZoneRiskResponse, DashboardSummaryResponse
 )
@@ -14,8 +16,7 @@ router = APIRouter(prefix="/risk", tags=["Risk"])
 
 
 @router.get("/ranking", response_model=RiskRankingResponse)
-def get_risk_ranking(db: Session = Depends(get_db)):
-    ranked = rank_assets(db)
+def get_risk_ranking(ranked: List[RiskResult] = Depends(get_ranked_assets)):
     counts = severity_counts(ranked)
     return RiskRankingResponse(
         computed_at=datetime.utcnow().isoformat(),
@@ -61,8 +62,10 @@ def get_zone_risk(db: Session = Depends(get_db)):
 
 
 @router.get("/summary", response_model=DashboardSummaryResponse)
-def get_dashboard_summary(db: Session = Depends(get_db)):
-    ranked = rank_assets(db)
+def get_dashboard_summary(
+    ranked: List[RiskResult] = Depends(get_ranked_assets),
+    db: Session = Depends(get_db),
+):
     counts = severity_counts(ranked)
     zones = get_zone_summary(db)
     at_risk = sum(

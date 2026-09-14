@@ -6,6 +6,8 @@ Also produces the zone risk summary table.
 from typing import List, Dict
 from .risk_scorer import RiskResult, compute_risk_scores, compute_zone_risk
 from sqlalchemy.orm import Session
+from fastapi import Depends
+from ..database import get_db
 
 
 def rank_assets(db: Session) -> List[RiskResult]:
@@ -16,6 +18,15 @@ def rank_assets(db: Session) -> List[RiskResult]:
     for i, r in enumerate(results, start=1):
         r.rank = i
     return results
+
+
+def get_ranked_assets(db: Session = Depends(get_db)) -> List[RiskResult]:
+    """
+    FastAPI dependency — runs rank_assets once per request.
+    Re-use across multiple route handlers in the same request via Depends()
+    so the DB scoring pipeline is never called twice in one request.
+    """
+    return rank_assets(db)
 
 
 def get_zone_summary(db: Session) -> List[Dict]:

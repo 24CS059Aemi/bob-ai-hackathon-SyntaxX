@@ -1,11 +1,11 @@
 """Route: GET /maintenance/plan"""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from typing import List
 from datetime import datetime
 
-from ..database import get_db
-from ..engine.asset_ranker import rank_assets
+from ..engine.asset_ranker import get_ranked_assets
+from ..engine.risk_scorer import RiskResult
 from ..engine.maintenance import generate_maintenance_plan
 from ..schemas import MaintenancePlanResponse, MaintenanceActionSchema
 
@@ -13,8 +13,7 @@ router = APIRouter(prefix="/maintenance", tags=["Maintenance"])
 
 
 @router.get("/plan", response_model=MaintenancePlanResponse)
-def get_maintenance_plan(db: Session = Depends(get_db)):
-    ranked = rank_assets(db)
+def get_maintenance_plan(ranked: List[RiskResult] = Depends(get_ranked_assets)):
     actions = generate_maintenance_plan(ranked)
     return MaintenancePlanResponse(
         generated_at=datetime.utcnow().isoformat(),

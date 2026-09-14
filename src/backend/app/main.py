@@ -9,6 +9,7 @@ Startup sequence:
 """
 
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -18,6 +19,19 @@ from fastapi.staticfiles import StaticFiles
 from . import models
 from .routes import assets, risk, maintenance, crew, bob
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Create tables, seed database, then start live data simulator."""
+    from .database import engine
+    from .data.seed import seed
+    from .data.live_simulator import start_live_simulator
+    models.Base.metadata.create_all(bind=engine)
+    seed()
+    start_live_simulator()
+    yield  # application runs here
+
+
 app = FastAPI(
     title="Power Outage Prediction & Grid Equipment Failure Advisor",
     description=(
@@ -26,6 +40,7 @@ app = FastAPI(
         "and generate prioritised maintenance and crew pre-positioning plans."
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS — allow React dev server in development; in production the frontend is
@@ -42,17 +57,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def startup_event():
-    """Create tables, seed database, then start live data simulator."""
-    from .database import engine
-    from .data.seed import seed
-    from .data.live_simulator import start_live_simulator
-    models.Base.metadata.create_all(bind=engine)
-    seed()
-    start_live_simulator()
 
 
 # Register API routers

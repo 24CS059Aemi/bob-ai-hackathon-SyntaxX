@@ -10,7 +10,7 @@ locally with zero IBM credentials.
 
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from ..engine.risk_scorer import RiskResult
@@ -25,21 +25,46 @@ WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "")
 WATSONX_URL        = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
 WATSONX_MODEL_ID   = os.getenv("WATSONX_MODEL_ID", "ibm/granite-13b-instruct-v2")
 
+# ── IAM token cache (valid for 1 hour; reuse across calls) ───────────────────
+_iam_token: Optional[str] = None
+_iam_token_expiry: Optional[datetime] = None
+
+
+def _get_iam_token() -> Optional[str]:
+    """Return a cached IAM bearer token, refreshing only when expired."""
+    global _iam_token, _iam_token_expiry
+    import requests  # type: ignore
+
+    now = datetime.utcnow()
+    if _iam_token and _iam_token_expiry and now < _iam_token_expiry:
+        return _iam_token
+
+    try:
+        resp = requests.post(
+            "https://iam.cloud.ibm.com/identity/token",
+            data={"grant_type": "urn:ibm:params:oauth:grant-type:apikey", "apikey": WATSONX_API_KEY},
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            return None
+        token = resp.json().get("access_token")
+        if token:
+            _iam_token = token
+            # IBM IAM tokens live 1 h; refresh 5 min early to be safe
+            _iam_token_expiry = now + timedelta(minutes=55)
+        return _iam_token
+    except Exception:
+        return None
+
 
 def _call_watsonx(prompt: str) -> Optional[str]:
     """Call watsonx.ai text generation API. Returns None on any error."""
     try:
         import requests  # type: ignore
 
-        token_url = "https://iam.cloud.ibm.com/identity/token"
-        token_resp = requests.post(
-            token_url,
-            data={"grant_type": "urn:ibm:params:oauth:grant-type:apikey", "apikey": WATSONX_API_KEY},
-            timeout=15,
-        )
-        if token_resp.status_code != 200:
+        access_token = _get_iam_token()
+        if not access_token:
             return None
-        access_token = token_resp.json().get("access_token")
 
         gen_url = f"{WATSONX_URL}/ml/v1/text/generation?version=2023-05-29"
         payload = {
@@ -103,7 +128,6 @@ def generate_briefing(ranked_assets: List[RiskResult], top_n: int = 5) -> dict:
     now = datetime.utcnow()
 
     # Build maintenance plan for deadline info
-    from ..engine.maintenance import generate_maintenance_plan
     plan = generate_maintenance_plan(ranked_assets)
     deadline = f"{plan[0].deadline_hours:.0f} hours" if plan else "4 hours"
 

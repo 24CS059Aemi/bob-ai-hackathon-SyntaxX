@@ -225,11 +225,13 @@ def compute_risk_scores(db: Session) -> List[RiskResult]:
         ) * af * lf
         risk = _clamp(raw, 0.0, 1.0)
 
-        # Grid impact factor
+        # Grid impact factor — normalised so a 500 MVA / 120k-customer asset = 1.0
+        # max_gif ≈ (120000/1000) * (500/100) = 120 * 5 = 600
         gif = (asset.customers_served / 1000.0) * (asset.capacity_mva / 100.0)
+        gif_norm = _clamp(gif / 600.0, 0.0, 1.0)
 
-        # Priority score 0-100
-        priority = _clamp(risk * (gif / 100.0) * 100.0, 0.0, 100.0)
+        # Priority score 0-100: blend of risk severity and grid impact
+        priority = _clamp(risk * 0.7 * 100.0 + gif_norm * 0.3 * 100.0, 0.0, 100.0)
 
         results.append(RiskResult(
             asset_id=aid,

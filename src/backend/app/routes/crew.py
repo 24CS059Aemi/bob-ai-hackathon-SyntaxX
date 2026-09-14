@@ -1,11 +1,11 @@
 """Route: GET /crew/positioning"""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from typing import List
 from datetime import datetime
 
-from ..database import get_db
-from ..engine.asset_ranker import rank_assets
+from ..engine.asset_ranker import get_ranked_assets
+from ..engine.risk_scorer import RiskResult
 from ..engine.crew import generate_crew_positioning
 from ..schemas import CrewPositioningResponse, CrewAssignmentSchema
 from ..data.generator import CREWS
@@ -14,8 +14,7 @@ router = APIRouter(prefix="/crew", tags=["Crew"])
 
 
 @router.get("/positioning", response_model=CrewPositioningResponse)
-def get_crew_positioning(db: Session = Depends(get_db)):
-    ranked = rank_assets(db)
+def get_crew_positioning(ranked: List[RiskResult] = Depends(get_ranked_assets)):
     assignments = generate_crew_positioning(ranked)
     return CrewPositioningResponse(
         generated_at=datetime.utcnow().isoformat(),
