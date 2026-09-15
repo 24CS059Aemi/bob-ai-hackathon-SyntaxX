@@ -7,16 +7,11 @@ Place your application screenshots in this folder.
 - [00-operational-flow.svg](00-operational-flow.svg) - end-to-end flow from sensor collection to crew action.
 - [00-system-architecture.svg](00-system-architecture.svg) - frontend, API, engines, database, and IBM Bob integration.
 
-## Recommended Demo Screenshots
+## Current Demo Screenshots
 
-Capture these four screens from the live dashboard at https://grid-advisor-yipp.onrender.com:
+- `00-home-page.png` - complete landing page with product overview, workflow, technology stack, and team information.
 
-1. `01-dashboard-overview.png` - full Overview tab showing the header counts, zone map, and risk ranking table.
-2. `02-severity-filters.png` - risk table with the Critical, High, Medium, and Low filters visible.
-3. `03-inline-sensor-data.png` - click `View` for S-01 or T-01 and capture the sensor trends shown below the table.
-4. `04-maintenance-crew-bob.png` - Maintenance, Crew, or Bob AI tab showing an actionable result.
-
-Use the same browser size for every capture and make sure the API has loaded real data before taking the screenshot.
+The live dashboard feature screenshots can be captured at https://grid-advisor-yipp.onrender.com/dashboard using the same desktop browser size. Use full-page capture so the complete selected view is visible; do not reuse the same image for different tabs.
 
 ## Naming Convention
 
