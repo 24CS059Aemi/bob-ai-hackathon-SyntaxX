@@ -20,7 +20,22 @@ The complete application is available at https://grid-advisor-yipp.onrender.com.
 
 All PNG files were captured from the live website at a consistent desktop viewport and use real dashboard data.
 
-Additional submitted captures are also retained in this folder under their original `Screenshot 2026-09-15 ...png` filenames.
+## Additional Submitted Screenshots
+
+The following 10 additional screenshots are also included exactly as submitted:
+
+- [Screenshot 2026-09-15 135743.png](Screenshot%202026-09-15%20135743.png)
+- [Screenshot 2026-09-15 135814.png](Screenshot%202026-09-15%20135814.png)
+- [Screenshot 2026-09-15 135844.png](Screenshot%202026-09-15%20135844.png)
+- [Screenshot 2026-09-15 135947.png](Screenshot%202026-09-15%20135947.png)
+- [Screenshot 2026-09-15 140026.png](Screenshot%202026-09-15%20140026.png)
+- [Screenshot 2026-09-15 140040.png](Screenshot%202026-09-15%20140040.png)
+- [Screenshot 2026-09-15 140133.png](Screenshot%202026-09-15%20140133.png)
+- [Screenshot 2026-09-15 140517.png](Screenshot%202026-09-15%20140517.png)
+- [Screenshot 2026-09-15 140535.png](Screenshot%202026-09-15%20140535.png)
+- [Screenshot 2026-09-15 140606 - Copy.png](Screenshot%202026-09-15%20140606%20-%20Copy.png)
+
+These files are retained with their original names so the submitted evidence is complete and traceable.
 
 ## Naming Convention
 
