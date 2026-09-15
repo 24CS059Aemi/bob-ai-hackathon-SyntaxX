@@ -7,11 +7,9 @@ Place your application screenshots in this folder.
 - [00-operational-flow.svg](00-operational-flow.svg) - end-to-end flow from sensor collection to crew action.
 - [00-system-architecture.svg](00-system-architecture.svg) - frontend, API, engines, database, and IBM Bob integration.
 
-## Current Demo Screenshots
+## Live Demo
 
-- `00-home-page.png` - complete landing page with product overview, workflow, technology stack, and team information.
-
-The live dashboard feature screenshots can be captured at https://grid-advisor-yipp.onrender.com/dashboard using the same desktop browser size. Use full-page capture so the complete selected view is visible; do not reuse the same image for different tabs.
+The complete application is available at https://grid-advisor-yipp.onrender.com. Use the live link for the current Home and Dashboard pages; this folder keeps only the reusable architecture and workflow diagrams.
 
 ## Naming Convention
 
