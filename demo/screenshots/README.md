@@ -13,33 +13,22 @@ The complete application is available at https://grid-advisor-yipp.onrender.com.
 
 ## Application Screenshots
 
-- `01-home-page.png` - complete landing page with product overview, workflow, technology stack, and team.
-- `02-dashboard-overview.png` - live dashboard with risk summary, zone heatmap, and asset ranking.
-- `03-maintenance.png` - maintenance actions with priorities, deadlines, skills, and durations.
-- `04-bob-ai.png` - Bob AI operational briefing and risk recommendations.
+- `1.png` - Home page hero section.
+- `2.png` - Home page feature section.
+- `3.png` - Home page workflow, technology, and team section.
+- `4.png` - Dashboard overview with risk summary, zone map, and asset ranking.
+- `5.png` - Medium severity filter view.
+- `6.png` - How It Works modal opened from the dashboard.
+- `7.png` - Inline sensor data view for a selected asset.
+- `8.png` - Maintenance plan with actions and deadlines.
+- `9.png` - Crew positioning and dispatch assignments.
+- `10.png` - IBM Bob AI briefing and recommendations.
 
-All PNG files were captured from the live website at a consistent desktop viewport and use real dashboard data.
-
-## Additional Submitted Screenshots
-
-The following 10 additional screenshots are also included exactly as submitted:
-
-- [Screenshot 2026-09-15 135743.png](Screenshot%202026-09-15%20135743.png)
-- [Screenshot 2026-09-15 135814.png](Screenshot%202026-09-15%20135814.png)
-- [Screenshot 2026-09-15 135844.png](Screenshot%202026-09-15%20135844.png)
-- [Screenshot 2026-09-15 135947.png](Screenshot%202026-09-15%20135947.png)
-- [Screenshot 2026-09-15 140026.png](Screenshot%202026-09-15%20140026.png)
-- [Screenshot 2026-09-15 140040.png](Screenshot%202026-09-15%20140040.png)
-- [Screenshot 2026-09-15 140133.png](Screenshot%202026-09-15%20140133.png)
-- [Screenshot 2026-09-15 140517.png](Screenshot%202026-09-15%20140517.png)
-- [Screenshot 2026-09-15 140535.png](Screenshot%202026-09-15%20140535.png)
-- [Screenshot 2026-09-15 140606 - Copy.png](Screenshot%202026-09-15%20140606%20-%20Copy.png)
-
-These files are retained with their original names so the submitted evidence is complete and traceable.
+All 10 PNG files are retained with the submitted numeric names so the evidence is complete and easy to reference.
 
 ## Naming Convention
 
-Name screenshots sequentially so they appear in logical order. Keep the names above when adding or replacing captures.
+Name screenshots sequentially so they appear in logical order. The current submitted set is `1.png` through `10.png`.
 
 ## Requirements
 
