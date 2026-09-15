@@ -1,6 +1,9 @@
 # Presentation
 
-Place your slide deck in this folder.
+The completed submission deck is [slides.pptx](slides.pptx).
+
+It contains 8 slides covering the problem, solution, workflow, architecture,
+dashboard evidence, operations flow, IBM Bob integration, impact, and team.
 
 ## Accepted Formats
 
@@ -8,8 +11,7 @@ Place your slide deck in this folder.
   slides.pptx     ← Acceptable
   slides.key      ← Acceptable (macOS Keynote)
 
-Rename your file to `slides.pdf` (or `slides.pptx`) so the evaluation
-pipeline can locate it reliably.
+The deck is named `slides.pptx` so the evaluation pipeline can locate it reliably.
 
 ## Recommended Slide Structure (5–8 slides)
 
