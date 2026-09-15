@@ -110,7 +110,7 @@ cp src/.env.example src/.env
 
 | Artifact | Link |
 |---|---|
-| 📹 Demo Video | [See demo/demo-video-link.txt](demo/demo-video-link.txt) |
+| 📹 Demo Video | [Watch on Google Drive](https://drive.google.com/file/d/1uU-o5FC7WdDRw2NWhvz_sDAwqwkYSie6/view?usp=sharing) · [Link file](demo/demo-video-link.txt) |
 | 🌐 Live Demo | [https://grid-advisor-yipp.onrender.com](https://grid-advisor-yipp.onrender.com) |
 | 🖼️ Screenshots | [See demo/screenshots/](demo/screenshots/) |
 | 📊 Presentation | [See presentation/](presentation/) |
