@@ -2,17 +2,17 @@ import { useState } from 'react'
 import type { RiskResult } from '../api/types'
 
 const SEVERITY_COLOR: Record<string, string> = {
-  Critical: 'bg-black text-white border border-black',
-  High:     'bg-zinc-800 text-white border border-zinc-800',
-  Medium:   'bg-zinc-700 text-white border border-zinc-700',
-  Low:      'bg-white text-black border border-black',
+  Critical: 'bg-red-600 text-white border border-red-700',
+  High:     'bg-orange-500 text-white border border-orange-600',
+  Medium:   'bg-amber-300 text-amber-950 border border-amber-400',
+  Low:      'bg-emerald-100 text-emerald-800 border border-emerald-400',
 }
 
 const SEVERITY_BAR: Record<string, string> = {
-  Critical: 'bg-black',
-  High:     'bg-zinc-800',
-  Medium:   'bg-zinc-700',
-  Low:      'bg-white border border-black',
+  Critical: 'bg-red-600',
+  High:     'bg-orange-500',
+  Medium:   'bg-amber-400',
+  Low:      'bg-emerald-500',
 }
 
 interface Props {
@@ -72,9 +72,9 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
           </thead>
           <tbody>
             {sorted.map(a => (
-              <tr key={a.asset_id} className="border-b hover:bg-black hover:text-white transition-colors">
+              <tr key={a.asset_id} className="border-b border-gray-200 hover:bg-slate-50 transition-colors">
                 <td className="px-3 py-2 font-bold text-gray-600">{a.rank}</td>
-                <td className="px-3 py-2 font-semibold text-black">{a.asset_id}</td>
+                <td className="px-3 py-2 font-semibold text-gray-900">{a.asset_id}</td>
                 <td className="px-3 py-2 capitalize text-gray-700">{a.asset_type}</td>
                 <td className="px-3 py-2 text-gray-700">{a.zone}</td>
                 <td className="px-3 py-2">
@@ -95,19 +95,19 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
                 </td>
                 <td className="px-3 py-2 text-gray-700">{a.customers_served.toLocaleString()}</td>
                 <td className="px-3 py-2 text-gray-700">{a.age_years}y</td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_temperature_c > 85 ? 'text-black font-bold' : 'text-gray-700'}`}>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_temperature_c > 85 ? 'text-red-700 font-bold' : 'text-gray-700'}`}>
                   {a.latest_temperature_c}
                 </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_partial_discharge_pc > 150 ? 'text-black font-bold' : 'text-gray-700'}`}>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_partial_discharge_pc > 150 ? 'text-red-700 font-bold' : 'text-gray-700'}`}>
                   {a.latest_partial_discharge_pc}
                 </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_oil_quality_index < 60 ? 'text-black font-bold' : 'text-gray-700'}`}>
+                <td className={`px-3 py-2 font-mono text-xs ${a.latest_oil_quality_index < 60 ? 'text-red-700 font-bold' : 'text-gray-700'}`}>
                   {a.latest_oil_quality_index}
                 </td>
                 <td className="px-3 py-2">
                   <button
                     onClick={() => onSelectAsset(a.asset_id)}
-                    className="text-xs text-black hover:underline font-bold"
+                    className="inline-flex items-center rounded-md border border-blue-700 bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700 hover:bg-blue-700 hover:text-white transition-colors"
                   >
                     View →
                   </button>

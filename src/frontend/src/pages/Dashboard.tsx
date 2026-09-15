@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import DashboardHeader from '../components/DashboardHeader'
 import RiskRankingTable from '../components/RiskRankingTable'
 import ZoneMap from '../components/ZoneMap'
@@ -99,6 +99,7 @@ export default function Dashboard() {
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null)
   const [activeTab,   setActiveTab]   = useState<'overview' | 'maintenance' | 'crew' | 'bob'>('overview')
   const [showInfo,    setShowInfo]    = useState(false)
+  const sensorSectionRef = useRef<HTMLDivElement>(null)
 
   const loadAll = useCallback(async () => {
     try {
@@ -120,6 +121,12 @@ export default function Dashboard() {
     const interval = setInterval(loadAll, REFRESH_MS)
     return () => clearInterval(interval)
   }, [loadAll])
+
+  useEffect(() => {
+    if (selectedAsset) {
+      sensorSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [selectedAsset])
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100">
@@ -197,9 +204,15 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-            {selectedAsset && (
-              <SensorSparklines assetId={selectedAsset} />
-            )}
+            <div ref={sensorSectionRef} className="scroll-mt-4">
+              {selectedAsset ? (
+                <SensorSparklines assetId={selectedAsset} />
+              ) : (
+                <div className="rounded-xl border border-dashed border-slate-300 bg-white p-5 text-center text-sm text-slate-500">
+                  Select <strong className="text-slate-700">View</strong> for any asset to see its sensor data here.
+                </div>
+              )}
+            </div>
           </div>
         )}
 
