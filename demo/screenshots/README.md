@@ -9,16 +9,22 @@ Place your application screenshots in this folder.
 
 ## Live Demo
 
-The complete application is available at https://grid-advisor-yipp.onrender.com. Use the live link for the current Home and Dashboard pages; this folder keeps only the reusable architecture and workflow diagrams.
+The complete application is available at https://grid-advisor-yipp.onrender.com.
+
+## Application Screenshots
+
+- `01-home-page.png` - complete landing page with product overview, workflow, technology stack, and team.
+- `02-dashboard-overview.png` - live dashboard with risk summary, zone heatmap, and asset ranking.
+- `03-maintenance.png` - maintenance actions with priorities, deadlines, skills, and durations.
+- `04-bob-ai.png` - Bob AI operational briefing and risk recommendations.
+
+All PNG files were captured from the live website at a consistent desktop viewport and use real dashboard data.
+
+Additional submitted captures are also retained in this folder under their original `Screenshot 2026-09-15 ...png` filenames.
 
 ## Naming Convention
 
-Name your screenshots sequentially so they appear in logical order:
-
-  01-landing-page.png       ← First thing a user sees
-  02-main-feature.png       ← Your primary feature in action
-  03-output-or-results.png  ← The result / value delivered
-  04-additional-feature.png ← Any other notable screen
+Name screenshots sequentially so they appear in logical order. Keep the names above when adding or replacing captures.
 
 ## Requirements
 
