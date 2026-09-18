@@ -1,0 +1,35 @@
+# Render.com deployment — native Python + Node build
+# Free tier, auto-deploys on every push to main.
+# deploy-trigger: 2
+
+services:
+  - type: web
+    name: grid-advisor
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: bash start.sh
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./grid_advisor.db
+      - key: LIVE_INTERVAL_SECONDS
+        value: "360"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: RANDOM_SEED
+        value: "42"
+      - key: VITE_API_URL
+        value: ""
+      # ── IBM watsonx.ai (optional — app works without these) ───────────────
+      # Set these in the Render dashboard → Environment → Secret Files
+      # or paste values directly. The app runs in rule-based mode without them.
+      - key: WATSONX_API_KEY
+        sync: false
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: WATSONX_URL
+        value: https://us-south.ml.cloud.ibm.com
+      - key: WATSONX_MODEL_ID
+        value: ibm/granite-13b-instruct-v2
+    healthCheckPath: /health

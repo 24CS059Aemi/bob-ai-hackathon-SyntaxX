@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+    --page-bg: #ffffff;
+    --panel-bg: #f8f8f8;
+    --text: #111111;
+    --muted: #575757;
+    --line: #d1d1d1;
+    --shadow: rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background-color: var(--page-bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.page-monochrome {
+    background-color: var(--page-bg);
+    color: var(--text);
+}
