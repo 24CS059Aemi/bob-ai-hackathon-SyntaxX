@@ -2,17 +2,17 @@ import { useState } from 'react'
 import type { RiskResult } from '../api/types'
 
 const SEVERITY_COLOR: Record<string, string> = {
-  Critical: 'bg-black text-white border border-black',
-  High:     'bg-zinc-800 text-white border border-zinc-800',
-  Medium:   'bg-zinc-700 text-white border border-zinc-700',
-  Low:      'bg-white text-black border border-black',
+  Critical: 'bg-red-600 text-white border border-red-700',
+  High:     'bg-orange-500 text-white border border-orange-600',
+  Medium:   'bg-amber-300 text-amber-950 border border-amber-400',
+  Low:      'bg-emerald-100 text-emerald-800 border border-emerald-400',
 }
 
 const SEVERITY_BAR: Record<string, string> = {
-  Critical: 'bg-black',
-  High:     'bg-zinc-800',
-  Medium:   'bg-zinc-700',
-  Low:      'bg-white border border-black',
+  Critical: 'bg-red-600',
+  High:     'bg-orange-500',
+  Medium:   'bg-amber-400',
+  Low:      'bg-emerald-500',
 }
 
 interface Props {
