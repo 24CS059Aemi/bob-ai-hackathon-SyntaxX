@@ -1,10 +1,10 @@
 import type { ZoneRisk } from '../api/types'
 
 const ZONE_FILL: Record<string, string> = {
-  Critical: '#111111',
-  High:     '#3a3a3a',
-  Medium:   '#6b6b6b',
-  Low:      '#d1d1d1',
+  Critical: '#dc2626',
+  High:     '#f97316',
+  Medium:   '#fbbf24',
+  Low:      '#10b981',
 }
 
 const ZONE_POS: Record<string, { x: number; y: number; w: number; h: number }> = {

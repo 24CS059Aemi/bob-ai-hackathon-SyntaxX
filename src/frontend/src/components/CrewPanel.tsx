@@ -1,11 +1,11 @@
 import type { CrewAssignment } from '../api/types'
 
 const STATUS_STYLE: Record<string, string> = {
-  DISPATCHED: 'bg-black text-white',
-  STAGING:    'bg-zinc-800 text-white',
-  SCHEDULED:  'bg-zinc-700 text-white',
-  STANDBY:    'bg-white text-black border border-black',
-  QUEUED:     'bg-zinc-100 text-black border border-black',
+  DISPATCHED: 'bg-red-600 text-white',
+  STAGING:    'bg-orange-500 text-white',
+  SCHEDULED:  'bg-amber-300 text-amber-950',
+  STANDBY:    'bg-emerald-100 text-emerald-800 border border-emerald-400',
+  QUEUED:     'bg-gray-100 text-gray-700 border border-gray-300',
 }
 
 interface Props { assignments: CrewAssignment[] }

@@ -1,17 +1,17 @@
 import type { MaintenanceAction } from '../api/types'
 
 const SEVERITY_STYLE: Record<string, string> = {
-  Critical: 'border-l-4 border-black bg-zinc-50',
-  High:     'border-l-4 border-zinc-700 bg-zinc-50',
-  Medium:   'border-l-4 border-zinc-500 bg-zinc-50',
-  Low:      'border-l-4 border-zinc-300 bg-white',
+  Critical: 'border-l-4 border-red-600 bg-red-50',
+  High:     'border-l-4 border-orange-500 bg-orange-50',
+  Medium:   'border-l-4 border-amber-400 bg-amber-50',
+  Low:      'border-l-4 border-emerald-500 bg-emerald-50',
 }
 
 const BADGE: Record<string, string> = {
-  Critical: 'bg-black text-white border border-black',
-  High:     'bg-zinc-800 text-white border border-zinc-800',
-  Medium:   'bg-zinc-600 text-white border border-zinc-600',
-  Low:      'bg-white text-black border border-black',
+  Critical: 'bg-red-600 text-white border border-red-700',
+  High:     'bg-orange-500 text-white border border-orange-600',
+  Medium:   'bg-amber-300 text-amber-950 border border-amber-400',
+  Low:      'bg-emerald-100 text-emerald-800 border border-emerald-400',
 }
 
 function formatDeadline(isoStr: string): string {

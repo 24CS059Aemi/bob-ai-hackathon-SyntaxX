@@ -26,10 +26,10 @@ export default function DashboardHeader({ summary, lastUpdated }: Props) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        {pill('● Critical', summary.critical_count, 'bg-black text-white')}
-        {pill('● High', summary.high_count, 'bg-zinc-900 text-white')}
-        {pill('● Medium', summary.medium_count, 'bg-zinc-700 text-white')}
-        {pill('● Low', summary.low_count, 'bg-white text-black border border-black')}
+        {pill('● Critical', summary.critical_count, 'bg-red-600 text-white')}
+        {pill('● High', summary.high_count, 'bg-orange-500 text-white')}
+        {pill('● Medium', summary.medium_count, 'bg-amber-300 text-amber-950')}
+        {pill('● Low', summary.low_count, 'bg-emerald-100 text-emerald-800 border border-emerald-400')}
       </div>
 
       <div className="flex flex-wrap gap-4 text-sm text-gray-700 border-t border-black/10 pt-3">
