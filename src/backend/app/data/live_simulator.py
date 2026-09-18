@@ -33,22 +33,22 @@ _sim_counter = 0
 
 
 def _generate_live_reading(asset: dict, rng: random.Random) -> dict:
-    """Generate one live sensor reading for an asset."""
+    """Generate one live sensor reading for an asset with realistic operational dynamics."""
     aid = asset["asset_id"]
     base = ASSET_RISK_PROFILE[aid]
 
-    # Add a small random walk so sensors drift naturally over time
-    drift = rng.uniform(-0.02, 0.03)   # slight upward bias = degradation
-    effective_risk = min(1.0, max(0.0, base + drift))
+    # Dynamic operational swing around base profile (simulating load shifts, thermal lag)
+    drift = rng.uniform(-0.08, 0.09)
+    effective_risk = min(1.0, max(0.05, base + drift))
 
     return {
         "asset_id": aid,
         "timestamp": datetime.now(timezone.utc).replace(tzinfo=None),
-        "temperature_c":         _sensor_value(effective_risk, rng, 60, 75, 85, 105),
-        "vibration_mms":         _sensor_value(effective_risk, rng, 0.5, 2.0, 3.5, 6.0),
-        "partial_discharge_pc":  _sensor_value(effective_risk, rng, 10, 50, 150, 250),
-        "oil_quality_index":     round(100 - _sensor_value(effective_risk, rng, 0, 25, 40, 60), 2),
-        "load_percent":          _sensor_value(effective_risk, rng, 40, 80, 85, 98),
+        "temperature_c":         round(_sensor_value(effective_risk, rng, 60, 75, 85, 105), 1),
+        "vibration_mms":         round(_sensor_value(effective_risk, rng, 0.5, 2.0, 3.5, 6.0), 2),
+        "partial_discharge_pc":  round(_sensor_value(effective_risk, rng, 10, 50, 150, 250), 1),
+        "oil_quality_index":     round(100 - _sensor_value(effective_risk, rng, 0, 25, 40, 60), 1),
+        "load_percent":          round(_sensor_value(effective_risk, rng, 40, 80, 85, 98), 1),
     }
 
 

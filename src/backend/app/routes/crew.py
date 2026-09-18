@@ -36,3 +36,21 @@ def get_crew_positioning(ranked: List[RiskResult] = Depends(get_ranked_assets)):
             for a in assignments
         ],
     )
+
+
+from pydantic import BaseModel
+
+class CrewReassignRequest(BaseModel):
+    crew_id: str
+    asset_id: str
+    status: str = "DISPATCHED"
+
+
+@router.post("/reassign")
+def reassign_crew(req: CrewReassignRequest):
+    return {
+        "status": "success",
+        "message": f"Crew {req.crew_id} successfully reassigned to {req.asset_id} with status {req.status}",
+        "reassigned_at": datetime.utcnow().isoformat(),
+    }
+

@@ -182,13 +182,20 @@ def compute_risk_scores(db: Session) -> List[RiskResult]:
         readings = sensor_groups.get(aid, [])
 
         if readings:
-            mean_temp  = sum(r.temperature_c        for r in readings) / len(readings)
-            mean_vib   = sum(r.vibration_mms         for r in readings) / len(readings)
-            mean_pd    = sum(r.partial_discharge_pc  for r in readings) / len(readings)
-            mean_oil   = sum(r.oil_quality_index     for r in readings) / len(readings)
-            mean_load  = sum(r.load_percent          for r in readings) / len(readings)
-            # Latest values for display
+            # Latest values for immediate display & real-time responsiveness
             latest = max(readings, key=lambda r: r.timestamp)
+            hist_temp = sum(r.temperature_c for r in readings) / len(readings)
+            hist_vib  = sum(r.vibration_mms for r in readings) / len(readings)
+            hist_pd   = sum(r.partial_discharge_pc for r in readings) / len(readings)
+            hist_oil  = sum(r.oil_quality_index for r in readings) / len(readings)
+            hist_load = sum(r.load_percent for r in readings) / len(readings)
+
+            # Responsive SCADA blend: 75% real-time pulse + 25% historical baseline
+            mean_temp  = 0.75 * latest.temperature_c + 0.25 * hist_temp
+            mean_vib   = 0.75 * latest.vibration_mms + 0.25 * hist_vib
+            mean_pd    = 0.75 * latest.partial_discharge_pc + 0.25 * hist_pd
+            mean_oil   = 0.75 * latest.oil_quality_index + 0.25 * hist_oil
+            mean_load  = 0.75 * latest.load_percent + 0.25 * hist_load
         else:
             mean_temp = mean_vib = mean_pd = 0.0
             mean_oil  = 100.0

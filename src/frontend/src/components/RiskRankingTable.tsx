@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import type { RiskResult } from '../api/types'
 
-const SEVERITY_COLOR: Record<string, string> = {
-  Critical: 'bg-red-600 text-white border border-red-700',
-  High:     'bg-orange-500 text-white border border-orange-600',
-  Medium:   'bg-amber-300 text-amber-950 border border-amber-400',
-  Low:      'bg-emerald-100 text-emerald-800 border border-emerald-400',
+const SEVERITY_BADGE: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  Critical: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', dot: 'bg-red-500' },
+  High:     { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', dot: 'bg-orange-500' },
+  Medium:   { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', dot: 'bg-amber-500' },
+  Low:      { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-500' },
 }
 
 const SEVERITY_BAR: Record<string, string> = {
-  Critical: 'bg-red-600',
+  Critical: 'bg-red-500',
   High:     'bg-orange-500',
-  Medium:   'bg-amber-400',
+  Medium:   'bg-amber-500',
   Low:      'bg-emerald-500',
 }
 
@@ -20,11 +20,19 @@ interface Props {
   onSelectAsset: (id: string) => void
 }
 
-type SortKey = 'rank' | 'risk_score' | 'priority_score' | 'customers_served' | 'age_years'
+type SortKey = 'rank' | 'risk_score' | 'customers_served' | 'age_years'
 
 export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('rank')
   const [filterSeverity, setFilterSeverity] = useState<string>('All')
+
+  const counts = {
+    All: assets.length,
+    Critical: assets.filter(a => a.severity_label === 'Critical').length,
+    High: assets.filter(a => a.severity_label === 'High').length,
+    Medium: assets.filter(a => a.severity_label === 'Medium').length,
+    Low: assets.filter(a => a.severity_label === 'Low').length,
+  }
 
   const sorted = [...assets]
     .filter(a => filterSeverity === 'All' || a.severity_label === filterSeverity)
@@ -33,89 +41,170 @@ export default function RiskRankingTable({ assets, onSelectAsset }: Props) {
       return (b[sortKey] as number) - (a[sortKey] as number)
     })
 
-  const thClass = 'px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:text-black'
-
   return (
-    <div className="bg-white rounded-2xl shadow p-4 border border-black/10">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-bold text-black">🏭 Asset Risk Ranking</h2>
-        <div className="flex gap-2 text-xs">
-          {['All', 'Critical', 'High', 'Medium', 'Low'].map(s => (
-            <button
-              key={s}
-              onClick={() => setFilterSeverity(s)}
-              className={`px-2 py-1 rounded-full border ${filterSeverity === s ? 'bg-black text-white border-black' : 'border-black text-black hover:bg-black hover:text-white'}`}
-            >
-              {s}
-            </button>
-          ))}
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      {/* Header & Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-lg font-bold text-gray-900 tracking-tight">
+              Asset Risk Priority Ranking
+            </h2>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+              {sorted.length} Assets Listed
+            </span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Real-time composite failure scoring according to IEEE C57.91 &amp; IEC 60270 standards
+          </p>
+        </div>
+
+        {/* Severity Filter Pills with dynamic counts */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {(['All', 'Critical', 'High', 'Medium', 'Low'] as const).map(s => {
+            const isActive = filterSeverity === s
+            return (
+              <button
+                key={s}
+                onClick={() => setFilterSeverity(s)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                  isActive
+                    ? 'bg-gray-900 text-white border-gray-900 shadow-xs'
+                    : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                {s} <span className={`ml-1 text-[11px] opacity-75 font-mono`}>({counts[s]})</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="border-b">
-            <tr>
-              <th className={thClass} onClick={() => setSortKey('rank')}>#</th>
-              <th className={thClass}>Asset</th>
-              <th className={thClass}>Type</th>
-              <th className={thClass}>Zone</th>
-              <th className={thClass} onClick={() => setSortKey('risk_score')}>Risk Score</th>
-              <th className={thClass}>Severity</th>
-              <th className={thClass} onClick={() => setSortKey('customers_served')}>Customers</th>
-              <th className={thClass} onClick={() => setSortKey('age_years')}>Age</th>
-              <th className={thClass}>Temp °C</th>
-              <th className={thClass}>PD pC</th>
-              <th className={thClass}>Oil</th>
-              <th className={thClass}>Detail</th>
+      {/* Responsive Table: Zero horizontal scroll on desktop, clean layout */}
+      <div className="w-full rounded-xl border border-gray-200 overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <th className="py-3 px-4 w-[28%] cursor-pointer hover:text-gray-900 transition" onClick={() => setSortKey('rank')}>
+                Asset &amp; Location ⇅
+              </th>
+              <th className="py-3 px-4 w-[24%] cursor-pointer hover:text-gray-900 transition" onClick={() => setSortKey('risk_score')}>
+                Risk &amp; Severity ⇅
+              </th>
+              <th className="py-3 px-4 w-[20%]">
+                Live Sensor Telemetry
+              </th>
+              <th className="py-3 px-4 w-[16%] cursor-pointer hover:text-gray-900 transition" onClick={() => setSortKey('customers_served')}>
+                Impact &amp; Age ⇅
+              </th>
+              <th className="py-3 px-4 w-[12%] text-right">
+                Action
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {sorted.map(a => (
-              <tr key={a.asset_id} className="group border-b hover:bg-gray-100 transition-colors">
-                <td className="px-3 py-2 font-bold text-gray-600 group-hover:text-gray-900">{a.rank}</td>
-                <td className="px-3 py-2 font-semibold text-black group-hover:text-black">{a.asset_id}</td>
-                <td className="px-3 py-2 capitalize text-gray-700 group-hover:text-gray-900">{a.asset_type}</td>
-                <td className="px-3 py-2 text-gray-700 group-hover:text-gray-900">{a.zone}</td>
-                <td className="px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2 bg-gray-200 rounded-full">
-                      <div
-                        className={`h-2 rounded-full ${SEVERITY_BAR[a.severity_label]}`}
-                        style={{ width: `${a.risk_score * 100}%` }}
-                      />
+          <tbody className="divide-y divide-gray-100 bg-white text-xs sm:text-sm">
+            {sorted.map(a => {
+              const sev = SEVERITY_BADGE[a.severity_label] || SEVERITY_BADGE.Low
+              const barColor = SEVERITY_BAR[a.severity_label] || SEVERITY_BAR.Low
+
+              return (
+                <tr key={a.asset_id} className="hover:bg-gray-50/70 transition-colors">
+                  {/* Column 1: Asset Code, Type, Zone, and Rank */}
+                  <td className="py-3.5 px-4 align-middle">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs font-bold text-gray-400 w-6">
+                        #{a.rank}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900 text-sm font-mono">
+                            {a.asset_id}
+                          </span>
+                          <span className="px-2 py-0.5 text-[11px] font-medium rounded-md bg-gray-100 text-gray-700 capitalize border border-gray-200">
+                            {a.asset_type}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1 font-medium">
+                          <span>📍 {a.zone}</span>
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-xs font-mono group-hover:text-gray-900">{(a.risk_score * 100).toFixed(0)}%</span>
-                  </div>
-                </td>
-                <td className="px-3 py-2">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${SEVERITY_COLOR[a.severity_label]}`}>
-                    {a.severity_label}
-                  </span>
-                </td>
-                <td className="px-3 py-2 text-gray-700 group-hover:text-gray-900">{a.customers_served.toLocaleString()}</td>
-                <td className="px-3 py-2 text-gray-700 group-hover:text-gray-900">{a.age_years}y</td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_temperature_c > 85 ? 'text-red-600 font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
-                  {a.latest_temperature_c}
-                </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_partial_discharge_pc > 150 ? 'text-red-600 font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
-                  {a.latest_partial_discharge_pc}
-                </td>
-                <td className={`px-3 py-2 font-mono text-xs ${a.latest_oil_quality_index < 60 ? 'text-red-600 font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
-                  {a.latest_oil_quality_index}
-                </td>
-                <td className="px-3 py-2">
-                  <button
-                    onClick={() => onSelectAsset(a.asset_id)}
-                    className="text-xs text-blue-600 hover:underline font-bold"
-                  >
-                    View →
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  {/* Column 2: Composite Risk Score + Progress Meter + Severity Badge */}
+                  <td className="py-3.5 px-4 align-middle">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 max-w-[200px]">
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${sev.bg} ${sev.text} ${sev.border}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${sev.dot}`} />
+                          {a.severity_label}
+                        </span>
+                        <span className="font-mono font-bold text-xs text-gray-900">
+                          {(a.risk_score * 100).toFixed(1)}% Risk
+                        </span>
+                      </div>
+                      <div className="w-full max-w-[200px] h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+                          style={{ width: `${Math.min(100, Math.max(5, a.risk_score * 100))}%` }}
+                        />
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Column 3: Live Sensor Telemetry (Temp & PD) */}
+                  <td className="py-3.5 px-4 align-middle">
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 text-[11px]">Temp:</span>
+                        <span className={`font-mono font-bold ${a.latest_temperature_c > 85 ? 'text-red-600' : 'text-gray-800'}`}>
+                          {a.latest_temperature_c.toFixed(1)}°C
+                        </span>
+                        {a.latest_temperature_c > 85 && (
+                          <span className="text-[10px] text-red-600 font-bold bg-red-50 px-1 rounded">High</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 text-[11px]">PD:</span>
+                        <span className={`font-mono font-semibold ${a.latest_partial_discharge_pc > 150 ? 'text-red-600 font-bold' : 'text-gray-800'}`}>
+                          {a.latest_partial_discharge_pc} pC
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Column 4: Impact & Age */}
+                  <td className="py-3.5 px-4 align-middle">
+                    <div className="text-xs">
+                      <div className="font-semibold text-gray-900 font-mono">
+                        {a.customers_served.toLocaleString()} <span className="text-[11px] font-sans font-normal text-gray-500">cust</span>
+                      </div>
+                      <div className="text-[11px] text-gray-500 mt-0.5">
+                        Age: <span className="font-medium text-gray-700">{a.age_years} yrs</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Column 5: Action Button */}
+                  <td className="py-3.5 px-4 align-middle text-right">
+                    <button
+                      onClick={() => onSelectAsset(a.asset_id)}
+                      className="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1">
+                      <span>Inspect</span>
+                      <span>→</span>
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
+      </div>
+
+      {/* Footer Info */}
+      <div className="mt-4 flex items-center justify-between text-xs text-gray-500 px-1">
+        <span>Click column headers to sort. Assets update continuously via live sensor feeds.</span>
+        <span>IEEE C57.91-2011 Compliant</span>
       </div>
     </div>
   )

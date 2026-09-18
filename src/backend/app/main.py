@@ -18,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 from . import models
-from .routes import assets, risk, maintenance, crew, bob
+from .routes import assets, risk, maintenance, crew, bob, auth
 
 # Resolve static dir early — used by both debug endpoint and spa_fallback
 _STATIC_DIR = Path(__file__).parent / "static"
@@ -64,6 +64,7 @@ app.add_middleware(
 
 
 # Register API routers
+app.include_router(auth.router)
 app.include_router(assets.router)
 app.include_router(risk.router)
 app.include_router(maintenance.router)
