@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import DashboardHeader from '../components/DashboardHeader'
 import RiskRankingTable from '../components/RiskRankingTable'
 import ZoneMap from '../components/ZoneMap'
+import LiveGridMap from '../components/LiveGridMap'
 import CrewPanel from '../components/CrewPanel'
 import BobChatPanel from '../components/BobChatPanel'
 import SensorSparklines from '../components/SensorSparklines'
@@ -468,11 +469,20 @@ export default function Dashboard() {
 
         {/* ── TAB CONTENT ── */}
 
-        {/* 1. OVERVIEW TAB (Spacious 2-column + Full-width 7-day Telemetry) */}
+        {/* 1. OVERVIEW TAB (Live Grid Map + Risk Table + Sparklines) */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
+            {/* Full-width Live Grid Map with zones + assets + crew dispatch */}
+            <LiveGridMap
+              zones={zoneList}
+              assets={assetList}
+              crew={crew?.assignments ?? []}
+              onSelectAsset={handleSelectAsset}
+            />
+
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-              <div className="xl:col-span-5">
+              {/* Keep old ZoneMap as compact secondary reference */}
+              <div className="xl:col-span-4">
                 {zones && (
                   <ZoneMap
                     zones={zoneList}
@@ -481,7 +491,7 @@ export default function Dashboard() {
                   />
                 )}
               </div>
-              <div className="xl:col-span-7">
+              <div className="xl:col-span-8">
                 <RiskRankingTable
                   assets={assetList}
                   onSelectAsset={handleSelectAsset}
