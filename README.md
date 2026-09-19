@@ -138,7 +138,7 @@ The platform ships with a built-in **SCADA simulator** that runs as a background
 
 | Artifact | Link |
 |---|---|
-| 📹 Demo Video | [See demo/demo-video-link.txt](demo/demo-video-link.txt) |
+| 📹 Demo Video | [Watch on Google Drive](https://drive.google.com/file/d/1sOyyvgPNTsu5GApZZwWq8QSBTBrx_EaB/view?usp=sharing) |
 | 🌐 Live Demo | [https://grid-advisor-yipp.onrender.com](https://grid-advisor-yipp.onrender.com) |
 | 🖼️ Screenshots | [See demo/screenshots/](demo/screenshots/) |
 | 📊 Presentation | [See presentation/](presentation/) |
