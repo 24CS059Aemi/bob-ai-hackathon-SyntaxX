@@ -80,103 +80,12 @@ export default function LoginPage() {
         </div>
       </header>
 
-      {/* Main Container - Split Screen Enterprise Layout */}
+      {/* Main Container - Centered Card */}
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 pt-24 pb-12 relative z-10">
-        <div className="w-full max-w-4xl bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-          
-          {/* Left Column: Visual Substation Picture & Platform Features Showcase */}
-          <div className="lg:col-span-6 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
-            
-            {/* SVG Illustration Backdrop: Smart Substation & High-Voltage Transmission Towers */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none">
-              <svg viewBox="0 0 400 500" className="w-full h-full object-cover">
-                <defs>
-                  <linearGradient id="gridGlow" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#38bdf8" />
-                    <stop offset="100%" stopColor="#818cf8" />
-                  </linearGradient>
-                </defs>
-                {/* Transmission Tower Silhouettes */}
-                <path d="M60 480 L110 180 L130 180 L180 480 Z" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.6"/>
-                <line x1="85" y1="330" x2="155" y2="330" stroke="currentColor" strokeWidth="2"/>
-                <line x1="95" y1="260" x2="145" y2="260" stroke="currentColor" strokeWidth="2"/>
-                <line x1="70" y1="220" x2="170" y2="220" stroke="currentColor" strokeWidth="2"/>
-                {/* Transmission Power Lines */}
-                <path d="M0 210 Q 120 250, 240 210 T 400 210" fill="none" stroke="url(#gridGlow)" strokeWidth="2.5" opacity="0.8"/>
-                <path d="M0 230 Q 120 270, 240 230 T 400 230" fill="none" stroke="url(#gridGlow)" strokeWidth="2" opacity="0.6"/>
-                <path d="M0 250 Q 120 290, 240 250 T 400 250" fill="none" stroke="url(#gridGlow)" strokeWidth="1.5" opacity="0.4"/>
-                {/* Transformer Tank Silhouette */}
-                <rect x="230" y="340" width="130" height="110" rx="8" fill="none" stroke="currentColor" strokeWidth="2"/>
-                <circle cx="260" cy="320" r="10" fill="none" stroke="#38bdf8" strokeWidth="2"/>
-                <circle cx="295" cy="320" r="10" fill="none" stroke="#38bdf8" strokeWidth="2"/>
-                <circle cx="330" cy="320" r="10" fill="none" stroke="#38bdf8" strokeWidth="2"/>
-              </svg>
-            </div>
+        <div className="w-full max-w-md bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden">
 
-            <div>
-              {/* Telemetry Active Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-6 backdrop-blur-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                SCADA Real-Time Core Connected
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
-                Power Grid Predictive Intelligence
-              </h2>
-              <p className="text-sm text-gray-300 leading-relaxed">
-                Empowering transmission operators and field engineers with AI-driven equipment failure prediction before outages happen.
-              </p>
-
-              {/* Feature Highlights */}
-              <div className="space-y-3.5 mt-8">
-                <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-xs">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
-                    ⚡
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-white">Live SCADA Sensor Fusion</h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Substation RTU streaming across 15 transformers, substations, and high-capacity feeders.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-xs">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">
-                    🛡️
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-white">IEEE C57 &amp; IEC 60270 Diagnostics</h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Predicts thermal hot-spot degradation and partial discharge insulation breakdown.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-xs">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
-                    👥
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-white">600,000+ Customers Protected</h4>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Automated risk prioritisation and field crew pre-positioning across 5 grid zones.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom System Status */}
-            <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400 font-mono">
-              <span>IEEE C57.91 Compliant</span>
-              <span>Grid Freq: 50.02 Hz</span>
-            </div>
-
-          </div>
-
-          {/* Right Column: Sign In Form */}
-          <div className="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-center bg-white">
+          {/* Sign In Form */}
+          <div className="p-8 sm:p-10 flex flex-col justify-center bg-white">
             
             <div className="mb-6">
               <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center mb-3">

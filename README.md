@@ -25,7 +25,9 @@ We built a **Bob-powered Grid Equipment Failure Advisor** — an AI-driven opera
 
 ## ✨ Key Features
 
+- **User Authentication** — Secure register and login system with JWT-based session management. Clean, centered card UI for both Login and Register pages (no distracting side panels).
 - **AI Risk Scoring Engine** — Composite risk formula (IEEE C57.91 / IEC 60270 / ISO 10816 grounded) fuses temperature, vibration, partial discharge, oil quality, load percentage, weather risk and historical incident rate into a single 0–100 priority score per asset.
+- **Live SCADA Simulator** — Background thread generates fresh sensor readings for all 15 assets every 6 minutes, simulating a real SCADA data feed. Runs indefinitely as long as the server is up.
 - **Zone Risk Heatmap** — Real-time geographic view of 5 grid zones colour-coded Critical / High / Medium / Low, showing which areas need immediate attention.
 - **Prioritised Maintenance Plan** — Auto-generates one maintenance action per asset with specific deadlines (4 hrs for Critical → 30 days for Low), required skill sets, and estimated durations.
 - **Skill-Matched Crew Pre-positioning** — Greedy dispatch algorithm assigns field crews to highest-priority assets using travel-time optimisation + skill-match scoring to minimise response time.
@@ -54,18 +56,16 @@ We built a **Bob-powered Grid Equipment Failure Advisor** — an AI-driven opera
 │   │   ├── app/
 │   │   │   ├── engine/   # Risk scorer, asset ranker, crew, maintenance
 │   │   │   ├── bob/      # watsonx.ai advisor + prompt templates
-│   │   │   ├── routes/   # API endpoints
-│   │   │   └── data/     # Synthetic data generator + live simulator
-│   │   └── tests/        # 43 pytest tests
+│   │   │   ├── routes/   # API endpoints (auth, risk, crew, bob, maintenance)
+│   │   │   └── data/     # Synthetic data generator + live SCADA simulator
+│   │   └── tests/        # pytest tests
 │   └── frontend/         # React + Vite + Tailwind frontend
+│       └── src/
+│           ├── pages/    # LoginPage, RegisterPage, Dashboard, HomePage
+│           ├── components/  # SCADA panel, risk table, crew panel, Bob chat
+│           └── context/  # AuthContext (JWT session management)
 ├── docs/                 # Written documentation
-│   ├── problem-statement.md
-│   ├── solution-overview.md
-│   ├── architecture.md
-│   └── setup-guide.md
-├── demo/                 # Demo artifacts
-│   ├── screenshots/      # App screenshots
-│   └── demo-video-link.txt
+├── demo/                 # Demo artifacts & screenshots
 ├── presentation/         # Slide deck
 └── submission.yaml       # Structured submission metadata
 ```
@@ -81,18 +81,29 @@ docker-compose up --build
 ```
 
 ### Option B — Local dev (two terminals)
-```bash
-# Terminal 1 — backend API
-cd src/backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
 
-# Terminal 2 — frontend dev server
+> ⚠️ **Important:** Make sure you `cd` into the correct folder before running each command. You have two Python versions — always use `py -3.11` to ensure packages install for the right interpreter.
+
+```bash
+# Terminal 1 — Backend API (Python 3.11)
+cd src/backend
+py -3.11 -m pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+# API running at http://localhost:8000
+
+# Terminal 2 — Frontend dev server
 cd src/frontend
 npm install
 npm run dev
 # Open http://localhost:5173
 ```
+
+> 💡 **Tip:** To make the live SCADA data update faster during demos, set the interval before starting:
+> ```powershell
+> # Windows PowerShell
+> $env:LIVE_INTERVAL_SECONDS="30"
+> uvicorn app.main:app --reload --port 8000
+> ```
 
 ### Option C — Render (live, free, permanent URL)
 Already deployed — see live demo link below. To redeploy your own instance, connect this repo on [render.com](https://render.com) — `render.yaml` configures everything automatically.
@@ -103,6 +114,23 @@ cp src/.env.example src/.env
 # Set WATSONX_API_KEY and WATSONX_PROJECT_ID
 # App works fully in rule-based mode without credentials
 ```
+
+---
+
+## 📊 Live SCADA Data — How It Works
+
+The platform ships with a built-in **SCADA simulator** that runs as a background thread:
+
+| What | Detail |
+|---|---|
+| **Assets monitored** | 15 (8 Transformers + 5 Substations + 2 Feeders) |
+| **Zones** | Zone-A through Zone-E (5 grid zones) |
+| **Update frequency** | Every 6 minutes (configurable via `LIVE_INTERVAL_SECONDS`) |
+| **Historical data** | 30 days pre-seeded on startup |
+| **Standards used** | IEEE C57.91, IEC 60270, ISO 10816, IEC 60422 |
+| **Data type** | Synthetic (simulates real SCADA — not connected to live utility) |
+
+> In a production deployment, the simulator would be replaced with a live SCADA/DMS API feed from the utility company.
 
 ---
 
@@ -119,8 +147,7 @@ cp src/.env.example src/.env
 
 ## ⚠️ Known Limitations
 
-- **Synthetic data only** — All sensor readings, weather forecasts and incidents are procedurally generated using IEEE/IEC-grounded parameters. Real deployment would require integration with live SCADA/DMS feeds and validated threshold calibration per utility.
-- **Single-user, no authentication** — The dashboard has no login or role-based access control. Production use would need secure multi-user access management.
+- **Synthetic SCADA data** — All sensor readings, weather forecasts and incidents are procedurally generated using IEEE/IEC-grounded parameters. Real deployment would require integration with live SCADA/DMS feeds and validated threshold calibration per utility.
 - **SQLite in-process storage** — Suitable for demo and single-instance deployments. High-availability production use would require PostgreSQL and a proper migration strategy.
 - **watsonx.ai is optional** — The AI briefing falls back to rule-based templates when IBM credentials are not configured. The rule-based output is functional but less nuanced than the Granite model.
 - **Free-tier Render cold starts** — The live demo may take up to 50 seconds to respond after a period of inactivity (Render free tier spin-down behaviour).
@@ -131,6 +158,8 @@ cp src/.env.example src/.env
 
 The strongest part of our submission is the **end-to-end AI risk pipeline** that we built from first principles — grounded in real IEEE C57.91, IEC 60270, and ISO 10816 standards. Rather than using a black-box model, we designed a transparent, explainable composite scoring formula that field engineers can trust and audit. Every risk score traces directly back to measurable sensor readings, weather signals, and historical incident rates.
 
-We are also proud of how tightly IBM Bob is integrated: Bob doesn't just answer questions — it generates an actionable morning operational briefing and a per-asset failure explanation that a grid operations manager can read in 30 seconds and act on immediately. The crew pre-positioning engine, which combines skill matching with geographic travel-time optimisation, is the kind of practical decision-support tool that would genuinely reduce outage response time in a real utility deployment.
+We are also proud of the **complete authentication system** — users can register and log in to access the operations dashboard, with a clean, minimal card UI that keeps the focus on the data. The **live SCADA simulator** runs continuously in the background, making every dashboard visit show updated readings without any manual refresh.
+
+The crew pre-positioning engine, which combines skill matching with geographic travel-time optimisation, is the kind of practical decision-support tool that would genuinely reduce outage response time in a real utility deployment.
 
 ---
